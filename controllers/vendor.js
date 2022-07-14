@@ -95,7 +95,7 @@ module.exports.DeleteBanner = async (req, res) => {
 };
 
 
-//post api for notification
+//post api for product
 
 module.exports.postproduct = async (req, res) => {
   let { productName, price, Reviews } = req.body;
@@ -206,3 +206,4 @@ module.exports.getProductAll = async (req, res) => {
     res.json({ message: error.message, status: false });
   }
 };
+

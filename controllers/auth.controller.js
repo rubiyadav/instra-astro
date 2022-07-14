@@ -146,8 +146,6 @@ module.exports.RestPassword = async (req, res) => {
 };
 
 
-
-
 //RestPasswordLink ---
 
 module.exports.RestPasswordLink = async (req, res) => {
@@ -263,7 +261,7 @@ module.exports.patchEditProfile = async (req, res, next) => {
   } catch (error) { }
 }
 
-
+//
 
 
 

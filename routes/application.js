@@ -47,4 +47,29 @@ router.delete('/PaymentDelete/:id', application.DeletePayment)
 //post api for order
 router.post('/Orderpost', application.postOrder)
 
+//get order 
+router.get('/Orderget/:id', application.getOrder)
+
+//patch api 
+router.patch('/Orderpatch/:id', application.patchOrder)
+
+//Delete api for order 
+router.delete('/Orderdelete/:id', application.DeleteOrder)
+
+//post api for tracking order
+router.post('/TrackigOrderpost', application.postTrackingOrder)
+
+//get api for tracking order
+
+router.get('/TrackingOrderget/:id', application.getOrderTracking)
+
+//update for tracker order
+router.patch('/TrackingOrderpatch/:id', application.patchOrderTracking)
+
+//Delete api for trackin order
+router.delete('/TrackingOrderdelete/:id', application.DeleteOrderTracking)
+
+
+
+
 module.exports = router;
