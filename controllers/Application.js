@@ -339,7 +339,7 @@ module.exports.getOrder = async (req, res) => {
 };
 
 
-//pathc for order
+//patch for order
 module.exports.patchOrder = async (req, res) => {
   let { User_id, Cart_id, Default_address, OrderStatus, Default_payment_id } = req.body;
 

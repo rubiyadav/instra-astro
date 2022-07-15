@@ -34,6 +34,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false
   },
+  roles: {
+    type: String,
+    default:'customer'}
 
 
 });

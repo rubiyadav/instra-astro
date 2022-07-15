@@ -261,8 +261,26 @@ module.exports.patchEditProfile = async (req, res, next) => {
   } catch (error) { }
 }
 
-//
+//patch for roles 
+module.exports.patchRoles = async (req, res) => {
+  let { roles } = req.body;
 
+  try {
+    if (!(roles)) {
+      res.json({ message: "All fields are required", status: false });
+    } else {
+      const user = await User.findByIdAndUpdate({ _id: req.params.id }, {
+      roles,
+      // id: bookidgen("ID", 14522, 199585),
+      });
+      if (!user) {
+        res.send('Unable to add user');
+      }
+      res.send( user);
+    }
+  } catch {
 
+  }
+}
 
 

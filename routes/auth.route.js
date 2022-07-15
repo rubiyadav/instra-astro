@@ -30,9 +30,11 @@ router.post('/changePassword', authController.newPassword)
 //patch api 
 router.patch('/profile/:id', authController.patchEditProfile)
 
+//patch roles
+router.patch('/rolespatch/:id', authController.patchRoles)
+
 
 module.exports = router;
-
 
 
 

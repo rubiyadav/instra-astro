@@ -70,6 +70,4 @@ router.patch('/TrackingOrderpatch/:id', application.patchOrderTracking)
 router.delete('/TrackingOrderdelete/:id', application.DeleteOrderTracking)
 
 
-
-
 module.exports = router;
