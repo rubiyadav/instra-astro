@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  Image: {
+  profile: {
     type: String,
     required: false
   },
@@ -36,7 +36,8 @@ const userSchema = new mongoose.Schema({
   },
   roles: {
     type: String,
-    default:'customer'}
+    default: 'customer'
+  }
 
 
 });

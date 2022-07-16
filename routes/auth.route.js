@@ -1,5 +1,20 @@
 const router = require('express').Router();
 const authController = require('../controllers/auth.controller');
+const multer = require('multer');
+const path = require("path");
+
+const storage = multer.diskStorage({
+destination: function (req, file, cb) {
+cb(null, path.join(path.dirname(__dirname), "public"));
+},
+
+filename: function (req, file, cb) {
+const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+cb(null, file.fieldname + '-' + uniqueSuffix)
+}
+});
+const upload = multer({ storage });
+
 
 
 //signUpUser
@@ -32,6 +47,8 @@ router.patch('/profile/:id', authController.patchEditProfile)
 
 //patch roles
 router.patch('/rolespatch/:id', authController.patchRoles)
+
+router.put('/update-user/:id', upload.single("profile"), authController.updateUser)
 
 
 module.exports = router;

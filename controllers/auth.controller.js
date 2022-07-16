@@ -11,7 +11,6 @@ const JWTkey = 'rubi'
 const auht = require("./middleware/auth");
 
 
-
 const from = "+19287568632"
 const sendSMS = async (to, from, otp) => {
   await client.messages
@@ -29,10 +28,10 @@ const sendSMS = async (to, from, otp) => {
 module.exports.sendsms = async (req, res) => {
   const message = await sendSMS(to, from, otp)
   console.log(message);
-  res.send(message)
+  res.status(200).json({ message: "otp send sussec fullly", otp })
 }
 
-var  isAuthenticated = function (req, res, next) {
+var isAuthenticated = function (req, res, next) {
   console.log(req.headers)
   var token = req.headers["authorization"];
   console.log("mytoken is " + token);
@@ -212,8 +211,6 @@ module.exports.login = async (req, res) => {
 
 };
 
-
-
 //new Password
 
 module.exports.newPassword = async (req, res) => {
@@ -270,17 +267,40 @@ module.exports.patchRoles = async (req, res) => {
       res.json({ message: "All fields are required", status: false });
     } else {
       const user = await User.findByIdAndUpdate({ _id: req.params.id }, {
-      roles,
-      // id: bookidgen("ID", 14522, 199585),
+        roles,
+        // id: bookidgen("ID", 14522, 199585),
       });
       if (!user) {
         res.send('Unable to add user');
       }
-      res.send( user);
+      res.send(user);
     }
   } catch {
 
   }
 }
 
+//Update user Profile
 
+module.exports.updateUser = async (req, res) => {
+  try {
+    const profile = req.file
+
+    const { name, } = req.body
+
+    const updateUser = User.findByIdAndUpdate(req.params.id, {
+      profile,
+      name
+    })
+    return res.status(200).json({
+      message: "SuccessFully update",
+      data: updateUser
+    })
+
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({
+      message: err.message
+    })
+  }
+}
