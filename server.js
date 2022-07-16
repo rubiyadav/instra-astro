@@ -36,30 +36,30 @@ const Main = async () => {
   }
 };
 
-//file upload
+// //file upload
 
-const multer = require('multer');
+// const multer = require('multer');
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, '/public/uploads');
-  },
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, '/public/uploads');
+//   },
 
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-    cb(null, file.fieldname + '-' + uniqueSuffix)
-  }
-});
-const upload1 = multer({ storage: storage }).single("user_file");
-app.post("/upload", (req, res) => {
-  console.log(req.data)
-  upload1(req, res, (err) => {
-    if (err) {
-      res.status(400).send("Something went wrong!");
-    }
-    res.send(req.file);
-  });
-});
+//   filename: function (req, file, cb) {
+//     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+//     cb(null, file.fieldname + '-' + uniqueSuffix)
+//   }
+// });
+// const upload1 = multer({ storage: storage }).single("user_file");
+// app.post("/upload", (req, res) => {
+//   console.log(req.data)
+//   upload1(req, res, (err) => {
+//     if (err) {
+//       res.status(400).send("Something went wrong!");
+//     }
+//     res.send(req.file);
+//   });
+// });
 
 Main();
 

@@ -137,7 +137,10 @@ module.exports.RestPassword = async (req, res) => {
   }
   try {
     sendSMS(`+91${mobile_Number}`, from, otpGenerated)
-    return res.send("SMSS Send");
+    return res.status(200).json({
+      message: "SMSS Send",
+      Otp: otpGenerated
+    });
   } catch (error) {
     return res.send('Unable to Send Mail, Please try again later', error);
   }
@@ -176,10 +179,12 @@ module.exports.RestPasswordOtp = async (req, res) => {
   if (user.otp == otp) {
     return res.send('Correct OTP');
   } else {
-    return res.send('No User existing');
+    return res.status(200).json({
+      message: 'No User existing',
+      otp
+    });
   }
 };
-
 
 //login ------
 
@@ -284,7 +289,7 @@ module.exports.patchRoles = async (req, res) => {
 
 module.exports.updateUser = async (req, res) => {
   try {
-    const profile = req.file
+    const profile = req.file ? req.file : null
 
     const { name, } = req.body
 
