@@ -16,7 +16,6 @@ cb(null, file.fieldname + '-' + uniqueSuffix)
 const upload = multer({ storage });
 
 
-
 //signUpUser
 
 router.post('/', authController.signUpUser);
@@ -48,11 +47,9 @@ router.patch('/profile/:id', authController.patchEditProfile)
 //patch roles
 router.patch('/rolespatch/:id', authController.patchRoles)
 
-router.put('/update-user/:id', upload.single("profile"), authController.updateUser)
-
+router.patch('/update-user/:id', authController.updateUser)
 
 module.exports = router;
-
 
 
 
