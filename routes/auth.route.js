@@ -3,17 +3,18 @@ const authController = require('../controllers/auth.controller');
 const multer = require('multer');
 const path = require("path");
 
-const storage = multer.diskStorage({
-destination: function (req, file, cb) {
-cb(null, path.join(path.dirname(__dirname), "public"));
-},
 
-filename: function (req, upload, cb) {
-const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-cb(null, file.fieldname + '-' + uniqueSuffix)
-}
-});
-const upload = multer({ storage });
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {cb(null,path.join(path.dirname(__dirname), "public/uploads"));},
+  
+  filename: function (req, file, cb) {
+  cb(null, file.originalname)
+  }
+  });
+  const upload = multer({ storage });
+  
+  
 
 
 //signUpUser
@@ -49,8 +50,6 @@ router.patch('/rolespatch/:id', authController.patchRoles)
 
 router.patch('/update-user/:id', authController.updateUser)
 
+router.patch('/update-user/:id', upload.single("profile"), authController.updateUser)
+
 module.exports = router;
-
-
-
-
