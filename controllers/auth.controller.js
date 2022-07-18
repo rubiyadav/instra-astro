@@ -79,7 +79,7 @@ module.exports.signUpUser = async (req, res) => {
 
 const createUser = async (user_Name, mobile_Number, password) => {
   const hashedPassword = await encrypt(password);
-  const otpGenerated = Math.floor(100000 + Math.random() * 900000)
+  const otpGenerated = Math.floor(1000 + Math.random() * 90000)
   const newUser = await User.create({
     user_Name, mobile_Number,
     password: hashedPassword,
@@ -128,7 +128,7 @@ module.exports.RestPassword = async (req, res) => {
   if (!user) {
     return res.send('No User existing');
   }
-  const otpGenerated = Math.floor(100000 + Math.random() * 900000)
+  const otpGenerated = Math.floor(1000 + Math.random() * 90000)
   const updatedUser = await User.findByIdAndUpdate(user._id, {
     $set: { otp: otpGenerated },
   });
@@ -167,8 +167,6 @@ module.exports.RestPasswordLink = async (req, res) => {
     return res.send('Password Updated');
   }
 };
-
-
 
 //.RestPasswordOtp
 
