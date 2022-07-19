@@ -151,22 +151,42 @@ module.exports.RestPassword = async (req, res) => {
 //RestPasswordLink ---
 
 module.exports.RestPasswordLink = async (req, res) => {
-  const { password, mobile_Number } = req.body;
+  const { newpassword, confirmpassword } = req.body;
 
-  const user = await User.findOne({ mobile_Number })
+  if (newpassword !== confirmpassword || newpassword.length < 5) res.send("password invalid")
+
+  const user = await User.findOne({ _id: req.params.id })
   if (!user) {
     return res.send('No User existing');
   }
-  const hashedPassword = await encrypt(password);
+  const hashedPassword = await encrypt(newpassword);
   const updatedUser = await User.findByIdAndUpdate(user._id, {
     $set: { password: hashedPassword },
   });
   if (!updatedUser) {
     return res.send('Password not Updated');
   } else {
-    return res.send('Password Updated');
+    return res.send([updatedUser, 'Password Updated']);
   }
 };
+
+// module.exports.RestPasswordLink = async (req, res) => {
+//   const { password, mobile_Number, confirmpassword } = req.body;
+//   if (password !== confirmpassword || password.length < 5) res.send("password invalid")
+//   const user = await User.findOne({ mobile_Number })
+//   if (!user) {
+//     return res.send('No User existing');
+//   }
+//   const hashedPassword = await encrypt(password);
+//   const updatedUser = await User.findByIdAndUpdate(user._id, {
+//     $set: { password: hashedPassword },
+//   });
+//   if (!updatedUser) {
+//     return res.send('Password not Updated');
+//   } else {
+//     return res.send('Password Updated');
+//   }
+// };
 
 //.RestPasswordOtp
 

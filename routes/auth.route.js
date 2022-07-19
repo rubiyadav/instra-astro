@@ -31,7 +31,7 @@ router.post('/resetpassword', authController.RestPassword);
 router.post('/otpcheck', authController.RestPasswordOtp);
 
 //RestPasswordLink
-router.post('/reset', authController.RestPasswordLink);
+router.post('/reset/:id', authController.RestPasswordLink);
 
 //login
 router.post('/login', authController.login);
