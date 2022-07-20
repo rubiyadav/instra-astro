@@ -4,7 +4,7 @@ const cart = require('../models/Cart')
 const Address = require('../models/Address')
 const Payment = require('../models/payment')
 const Order = require('../models/Order')
-const Tracking_order = require("../models/Tracking_order");
+const Tracking_order = require("../models/Tracking_Order");
 
 // Cart post api
 
@@ -109,7 +109,7 @@ module.exports.postAddress = async (req, res) => {
       res.json({ message: "All fields are required", status: false });
     } else {
       const address = await Address.create({
-        User_ID, Street,Area,City,State,Country,
+        User_ID, Street, Area, City, State, Country,
         id: bookidgen("ID", 14522, 199585),
       });
 
@@ -185,7 +185,7 @@ module.exports.AddressPatch = async (req, res, next) => {
 //Delete Api for address
 module.exports.DeleteAddress = async (req, res) => {
   try {
-    const address = await Address .findOneAndDelete({ id: req.params.id });
+    const address = await Address.findOneAndDelete({ id: req.params.id });
     if (!address) {
       res.json({ message: "Enter the correct id", status: false });
     } else {
@@ -387,7 +387,7 @@ module.exports.postTrackingOrder = async (req, res) => {
     if (!(Order_id && order_Location && OrderStatus && order_PaymentMode && order_PaymentStatus)) {
       res.json({ message: "All fields are required", status: false });
     } else {
-      const tarckingorder = await Tracking_order .create({
+      const tarckingorder = await Tracking_order.create({
         Order_id,
         order_Location,
         order_PaymentMode,
