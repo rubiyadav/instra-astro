@@ -1,19 +1,15 @@
 const { encrypt, compare } = require('../services/crypto');
-// const { generateOTP } = require('../services/OTP');
-// const { sendMail ,forgotPassword } = require('../services/MAIL');
 const User = require('../models/User');
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt")
 const JWTkey = 'rubi'
-const auht = require("./middleware/auth");
+const bcrypt = require("bcrypt")
 
 
-
-const from = "+19287568632"
-const sendSMS = async (to, from, otp) => {
+const sendSMS = async (to, otp) => {
+  const from = "+19287568632"
   await client.messages
     .create({
       body: otp,
@@ -26,11 +22,6 @@ const sendSMS = async (to, from, otp) => {
     });
 }
 
-module.exports.sendsms = async (req, res) => {
-  const message = await sendSMS(to, from, otp)
-  console.log(message);
-  res.status(200).json({ message: "otp send sussec fullly", otp })
-}
 
 module.exports.isAuthenticated = function (req, res, next) {
   console.log(req.headers)
@@ -51,70 +42,6 @@ module.exports.isAuthenticated = function (req, res, next) {
   })
 
 
-};
-// var isAuthenticated = function (req, res, next) {
-//   console.log(req.headers)
-//   var token = req.headers["authorization"];
-//   console.log("mytoken is " + token);
-//   if (!token) {
-//     return res.status(401).json({
-//       error: null,
-//       msg: "You have to login first before you can access your lists.",
-//       data: null
-//     });
-//   }
-
-//   jwt.verify(token, JWTkey, function (err, decodedToken) {
-//     if (err) {
-//       return res.status(401).json({
-//         error: err,
-//         msg: "Login timed out, please login again.",
-//         data: null
-//       });
-//     }
-//     req.decodedToken = decodedToken;
-//     next();
-//   });
-// };
-module.exports.signUpUser = async (req, res) => {
-  const { user_Name, mobile_Number, password } = req.body;
-
-
-  // Check if user already exist
-  const Existing = await User.findOne({ mobile_Number })
-  if (Existing) {
-    return res.send('Already existing');
-  }
-  encryptedPassword = await bcrypt.hash(password, 10);
-
-
-  // create new user
-  const newUser = await createUser(user_Name, mobile_Number, password);
-  if (!newUser[0]) {
-    return res.status(400).send({
-      message: 'Unable to create new user',
-    });
-  }
-  res.send(newUser);
-};
-
-const createUser = async (user_Name, mobile_Number, password) => {
-  const hashedPassword = await encrypt(password);
-  const otpGenerated = Math.floor(1000 + Math.random() * 90000)
-  const newUser = await User.create({
-    user_Name, mobile_Number,
-    password: hashedPassword,
-    otp: otpGenerated,
-  });
-  if (!newUser) {
-    return [false, 'Unable to sign you up'];
-  }
-  try {
-    sendSMS(`+91${mobile_Number}`, from, otpGenerated)
-    return [true, newUser];
-  } catch (error) {
-    return [false, 'Unable to sign up, Please try again later', error];
-  }
 };
 
 
@@ -149,7 +76,7 @@ module.exports.RestPassword = async (req, res) => {
   if (!user) {
     return res.send('No User existing');
   }
-  const otpGenerated = Math.floor(1000 + Math.random() * 90000)
+  const otpGenerated = Math.floor(10000 + Math.random() * 90000)
   const updatedUser = await User.findByIdAndUpdate(user._id, {
     $set: { otp: otpGenerated },
   });
@@ -157,7 +84,7 @@ module.exports.RestPassword = async (req, res) => {
     return res.send('Unable to Generate otp')
   }
   try {
-    sendSMS(`+91${mobile_Number}`, from, otpGenerated)
+    sendSMS(`+91${mobile_Number}`, otpGenerated)
     return res.status(200).json({
       message: "SMSS Send",
       Otp: otpGenerated
@@ -208,58 +135,6 @@ module.exports.RestPasswordOtp = async (req, res) => {
 };
 
 //login ------
-module.exports.login = async (req, res) => {
-
-  try {
-    const { mobile_Number, password } = req.body;
-
-    if (!(mobile_Number && password)) {
-      res.status(400).send("All input is required");
-    }
-
-    const user = await User.findOne({ mobile_Number });
-
-    if (user && (await compare(password, user.password))) {
-      jwt.sign({ user_id: user._id }, JWTkey, { expiresIn: '3h' }, (err, token) => {
-        if (err) res.status(400).send("Invalid Credentials");
-        res.send({ user, token });
-      }
-      );
-
-    }
-
-  } catch (err) {
-    console.log(err);
-  }
-
-};
-// module.exports.login = async (req, res) => {
-
-//   try {
-//     const { mobile_Number, password } = req.body;
-
-//     if (!(mobile_Number && password)) {
-//       res.status(400).send("All input is required");
-//     }
-
-//     const user = await User.findOne({ mobile_Number });
-
-//     if (user && (await compare(password, user.password))) {
-//       const token = jwt.sign(
-//         { user_id: user._id },
-//         JWTkey,
-//         {
-//           expiresIn: "8h",
-//         }
-//       );
-//       res.send({ user, token });
-//     }
-//     res.status(400).send("Invalid Credentials");
-//   } catch (err) {
-//     console.log(err);
-//   }
-
-// };
 
 //new Password
 
@@ -330,6 +205,7 @@ module.exports.patchRoles = async (req, res) => {
   }
 }
 
+
 //Update user Profile
 
 module.exports.updateUser = async (req, res) => {
@@ -354,3 +230,4 @@ module.exports.updateUser = async (req, res) => {
     })
   }
 }
+
