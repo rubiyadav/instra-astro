@@ -1,6 +1,6 @@
 
 const bookidgen = require("bookidgen");
-const cart = require('../models/cart')
+const cart = require('../models/Cart')
 const Address = require('../models/Address')
 const Payment = require('../models/payment')
 const Order = require('../models/Order')

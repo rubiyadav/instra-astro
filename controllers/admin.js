@@ -1,7 +1,7 @@
 const bookidgen = require("bookidgen");
 const Banner = require('../models/Banner')
 const moment = require("moment");
-const product = require('../models/product')
+// const product = require('../models/product')
 const { encrypt, compare } = require('../services/crypto');
 const User = require('../models/User');
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -103,11 +103,11 @@ module.exports.login = async (req, res) => {
 
 //post Banner
 
-module.exports. postBanner= async (req, res) => {
+module.exports.postBanner = async (req, res) => {
   let { imgUrl } = req.body;
 
   try {
-    if (!( imgUrl)) {
+    if (!(imgUrl)) {
       res.json({ message: "All fields are required", status: false });
     } else {
       const banner = await Banner.create({
@@ -136,7 +136,7 @@ module.exports. postBanner= async (req, res) => {
 
 module.exports.getBanner = async (req, res) => {
   try {
-    const banner = await  Banner .findOne({ id: req.params.id });
+    const banner = await Banner.findOne({ id: req.params.id });
     if (!banner) {
       res.json({ message: "Enter the correct id", status: false });
     } else {
@@ -225,7 +225,7 @@ module.exports.postproduct = async (req, res) => {
 
 module.exports.getProduct = async (req, res) => {
   try {
-    const Product = await product .findOne({ id: req.params.id });
+    const Product = await product.findOne({ id: req.params.id });
     if (!Product) {
       res.json({ message: "Enter the correct id", status: false });
     } else {
@@ -287,7 +287,7 @@ module.exports.Deleteproduct = async (req, res) => {
 //get all product
 module.exports.getProductAll = async (req, res) => {
   try {
-    const Product = await product.find({ });
+    const Product = await product.find({});
     if (!Product) {
       res.json({ message: "Enter the correct id", status: false });
     } else {
