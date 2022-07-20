@@ -11,6 +11,7 @@ const JWTkey = 'rubi'
 const auht = require("./middleware/auth");
 
 
+
 const from = "+19287568632"
 const sendSMS = async (to, from, otp) => {
   await client.messages
@@ -31,30 +32,50 @@ module.exports.sendsms = async (req, res) => {
   res.status(200).json({ message: "otp send sussec fullly", otp })
 }
 
-var isAuthenticated = function (req, res, next) {
+module.exports.isAuthenticated = function (req, res, next) {
   console.log(req.headers)
-  var token = req.headers["authorization"];
+  var token = req.headers["x-access-token"];
   console.log("mytoken is " + token);
-  if (!token) {
-    return res.status(401).json({
-      error: null,
-      msg: "You have to login first before you can access your lists.",
-      data: null
-    });
-  }
+  if (!token) res.send("You have to login first before you can access your lists.")
 
-  jwt.verify(token, JWTkey, function (err, decodedToken) {
+  jwt.verify(token, JWTkey, (err) => {
+
     if (err) {
-      return res.status(401).json({
-        error: err,
-        msg: "Login timed out, please login again.",
-        data: null
-      });
+
+      res.send("not Autori")
+
+    } else {
+      next()
+
     }
-    req.decodedToken = decodedToken;
-    next();
-  });
+  })
+
+
 };
+// var isAuthenticated = function (req, res, next) {
+//   console.log(req.headers)
+//   var token = req.headers["authorization"];
+//   console.log("mytoken is " + token);
+//   if (!token) {
+//     return res.status(401).json({
+//       error: null,
+//       msg: "You have to login first before you can access your lists.",
+//       data: null
+//     });
+//   }
+
+//   jwt.verify(token, JWTkey, function (err, decodedToken) {
+//     if (err) {
+//       return res.status(401).json({
+//         error: err,
+//         msg: "Login timed out, please login again.",
+//         data: null
+//       });
+//     }
+//     req.decodedToken = decodedToken;
+//     next();
+//   });
+// };
 module.exports.signUpUser = async (req, res) => {
   const { user_Name, mobile_Number, password } = req.body;
 
@@ -170,24 +191,6 @@ module.exports.RestPasswordLink = async (req, res) => {
   }
 };
 
-// module.exports.RestPasswordLink = async (req, res) => {
-//   const { password, mobile_Number, confirmpassword } = req.body;
-//   if (password !== confirmpassword || password.length < 5) res.send("password invalid")
-//   const user = await User.findOne({ mobile_Number })
-//   if (!user) {
-//     return res.send('No User existing');
-//   }
-//   const hashedPassword = await encrypt(password);
-//   const updatedUser = await User.findByIdAndUpdate(user._id, {
-//     $set: { password: hashedPassword },
-//   });
-//   if (!updatedUser) {
-//     return res.send('Password not Updated');
-//   } else {
-//     return res.send('Password Updated');
-//   }
-// };
-
 //.RestPasswordOtp
 
 module.exports.RestPasswordOtp = async (req, res) => {
@@ -205,7 +208,6 @@ module.exports.RestPasswordOtp = async (req, res) => {
 };
 
 //login ------
-
 module.exports.login = async (req, res) => {
 
   try {
@@ -218,21 +220,46 @@ module.exports.login = async (req, res) => {
     const user = await User.findOne({ mobile_Number });
 
     if (user && (await compare(password, user.password))) {
-      const token = jwt.sign(
-        { user_id: user._id },
-        JWTkey,
-        {
-          expiresIn: "8h",
-        }
+      jwt.sign({ user_id: user._id }, JWTkey, { expiresIn: '3h' }, (err, token) => {
+        if (err) res.status(400).send("Invalid Credentials");
+        res.send({ user, token });
+      }
       );
-      res.send({ user, token });
+
     }
-    res.status(400).send("Invalid Credentials");
+
   } catch (err) {
     console.log(err);
   }
 
 };
+// module.exports.login = async (req, res) => {
+
+//   try {
+//     const { mobile_Number, password } = req.body;
+
+//     if (!(mobile_Number && password)) {
+//       res.status(400).send("All input is required");
+//     }
+
+//     const user = await User.findOne({ mobile_Number });
+
+//     if (user && (await compare(password, user.password))) {
+//       const token = jwt.sign(
+//         { user_id: user._id },
+//         JWTkey,
+//         {
+//           expiresIn: "8h",
+//         }
+//       );
+//       res.send({ user, token });
+//     }
+//     res.status(400).send("Invalid Credentials");
+//   } catch (err) {
+//     console.log(err);
+//   }
+
+// };
 
 //new Password
 

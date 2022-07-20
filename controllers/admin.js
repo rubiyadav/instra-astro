@@ -94,7 +94,6 @@ module.exports.DeleteBanner = async (req, res) => {
   }
 };
 
-
 //post api for product
 
 module.exports.postproduct = async (req, res) => {
