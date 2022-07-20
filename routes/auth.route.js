@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const admin = require('../controllers/Admin');
+const admin = require('../controllers/admin');
 const authController = require('../controllers/auth.controller');
 const multer = require('multer');
 const path = require("path");
