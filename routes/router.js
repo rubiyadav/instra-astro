@@ -5,9 +5,19 @@ router.use('/auth', require('./auth.route'));
 router.use('/admin', require('./admin'))
 // router.use('/admin', require('./admin'));
 // router.js
-router.use('/application', require('./application'))
+// router.use('/application', require('./application'))
 
 router.use('/product', require('./productRoutes'))
+
+router.use('/banner', require('./bannerRoutes'))
+
+router.use('/notification', require('./NotificationRoutes'))
+
+router.use('/cart', require('./cartRoutes'))
+
+router.use('/category', require('./topCategoryRoutes'))
+
+router.use('order',require('./orderRoutes'))
 
 
 module.exports = router;

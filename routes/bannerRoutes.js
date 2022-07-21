@@ -26,5 +26,6 @@ router.get("/getBanner", getBanner);
 router.post("/editBanner/:id", upload.single("myField"), editBanner);
 router.get("/deleteBanner/:id", deleteBanner);
 
+
 module.exports = router;
 

@@ -10,8 +10,6 @@ const productSchema = new Schema(
             required: true,
         },
 
-
-
         country_origin: {
             type: String,
             required: true,
@@ -27,8 +25,6 @@ const productSchema = new Schema(
             required: true,
         },
 
-
-
         productPictures: {
             type: Array,
             required: true,
@@ -37,3 +33,4 @@ const productSchema = new Schema(
     { timestamps: true }
 );
 module.exports = model('product', productSchema)
+

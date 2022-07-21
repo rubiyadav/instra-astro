@@ -20,22 +20,9 @@ router.patch('/Bannerpatch/:id', admin.patchbanner)
 router.delete('/Bannerdelete/:id', admin.DeleteBanner)
 
 
-//post api product
-router.post('/product', admin.postproduct)
-
-//get product
-
-router.get('/ProductByID/:id', isAuthenticated, admin.getProduct);
-
-//patch product
-router.patch('/productPatch/:id', admin.patchproduct)
-
-//Delete api
-router.delete('/productDelete/:id', admin.Deleteproduct)
-
 //get all
 
-router.get('/Productall', isAuthenticated, admin.getProductAll);
+// router.get('/Productall', isAuthenticated, admin.getProductAll);
 
 router.post('/login', admin.login);
 router.post('/', admin.signUpUser);

@@ -1,148 +1,128 @@
 const Order = require("../models/Order");
-const OrderAdmin = require("../models/OrderAdmin");
-const Cart = require("../models/Cart");
-const User = require("../models/User");
-const Address = require("../models/Address");
+// const OrderAdmin = require("../models/OrderAdmin");
+// const Cart = require("../models/Cart");
+// const User = require("../models/User");
+// const Address = require("../models/Address");
 
 
-  module.exports.addOrder = async (req, res) => {
-      const getUser = await User.findById(req.user);
-      const { _id } = getUser;
-      const getAddress = await Address.findOne({ user: _id });
-      const orderAdmin = await OrderAdmin.create({
-        user: getUser._id,
-        addressId: getAddress._id,
-        totalAmount: req.body.totalAmount,
-        items: req.body.items,
-        paymentStatus: req.body.paymentStatus,
-        paymentType: req.body.paymentType,
-        orderStatus: req.body.orderStatus,
+
+
+// post api for product orderd
+
+module.exports.postOrder = async (req, res) => {
+  let { user, addressId, totalAmount, items, productId, payablePrice
+    , purchasedQty, paymentStatus, paymentType, orderStatus, date, isCompleted ,} = req.body;
+
+  try {
+    if (!(user && addressId && totalAmount && items && orderStatus && productId && payablePrice && purchasedQty && paymentStatus && paymentType && isCompleted && date  )) {
+      res.json({ message: "All fields are required", status: false });
+    } else {
+      const orders = await Order.create({
+        user,
+        addressId,
+        totalAmount,
+        orderStatus,
+        items,
+        productId,
+        payablePrice,
+        purchasedQty,
+        paymentStatus,
+        paymentType,
+        date,
+        isCompleted
       });
 
-      Cart.deleteOne({ user: getUser._id }).exec((error, result) => {
-        if (error) return res.status(400).json({ error });
-        if (result) {
-          req.body.user = getUser._id;
-          req.body.orderStatus = [
-            {
-              type: "ordered",
-              date: new Date(),
-              isCompleted: true,
-            },
-            {
-              type: "packed",
-              isCompleted: false,
-            },
-            {
-              type: "shipped",
-              isCompleted: false,
-            },
-            {
-              type: "delivered",
-              isCompleted: false,
-            },
-          ];
-          const order = Order.create({
-            user: getUser._id,
-            addressId: getAddress._id,
-            totalAmount: req.body.totalAmount,
-            items: req.body.items,
-            paymentStatus: req.body.paymentStatus,
-            paymentType: req.body.paymentType,
-            orderStatus: req.body.orderStatus,
-          });
-          return res
-            .status(201)
-            .json({ msg: "Order placed successfully", order });
-        }
-      });
-  }
-
-
-  module.exports.previouslyBoughtItem = async  (req, res) => {
-      const getUser = await User.findById(req.user);
-      try {
-        const getPreviousItem = await Order.find({ user: getUser._id })
-      .populate("items.productId")
-        res.status(201).json({ data: getPreviousItem });
-      } catch (error) {
-        res.status(400).json(error);
+      if (!orders) {
+        res.json({ message: "orders is not confermed", status: false });
+      } else {
+        res.json({
+          message: "Order placed successfully",
+          data: orders,
+          status: true,
+        });
       }
-};
-
-  module.exports.recentlyOrdertItem = async  (req, res) => {
-      const getUser = await User.findById(req.user);
-
-      try {
-        const getPreviousItem = await Order.findOne({ user: getUser._id });
-        console.log(getPreviousItem);
-        res.status(201).json({ data: getPreviousItem });
-      } catch (error) {
-        res.status(400).json(error);
     }
+  } catch (error) {
+    res.json({ message: error.message, status: false });
+  }
 };
 
-module.exports.viewActiveOrders = async (req, res) => {
-
-      const getUser = await User.findById(req.user);
-      const { _id } = getUser;
-      const getProduct = await Order.find(_id, {
-        orderStatus: {
-          $elemMatch: {
-            isCompleted: false,
-          },
-        },
+//get for order
+module.exports.getOrder = async (req, res) => {
+  try {
+    const orders = await Order.findOne({ id: req.params.id });
+    if (!orders) {
+      res.json({ message: "Enter the correct id", status: false });
+    } else {
+      res.json({
+        message: "Order placed successfully",
+        data: orders,
+        status: true
       });
-      res.status(200).json({ response: getProduct })
+
+    }
+  } catch (error) {
+    res.json({ message: error.message, status: false });
+  }
 };
 
-    module.exports.trackOrders = async (req, res) => {
-      const getUser = await User.findById( req.user);
-      const { _id } = getUser;
-      const getProduct = await Order.find(_id, {
-        orderStatus: {
-          $elemMatch: {
-            type: 1,
-          },
-        },
+
+//patch for order
+module.exports.patchOrder = async (req, res) => {
+  let { User_id, Cart_id, Default_address, OrderStatus, Default_payment_id } = req.body;
+
+  try {
+    if (!(User_id && Cart_id && Default_address && OrderStatus && Default_payment_id)) {
+      res.json({ message: "All fields are required", status: false });
+    } else {
+      const updatedOrder = await Order.findByIdAndUpdate({ _id: req.params.id }, {
+        User_id,
+        Cart_id,
+        Default_address,
+        OrderStatus,
+        Default_payment_id,
+        id: bookidgen("ID", 14522, 199585),
       });
-      res.status(200).json({ response: getProduct });
+      if (!updatedOrder) {
+        res.send('Unable to add payment');
+      }
+      res.send(updatedOrder);
+    }
+  } catch {
+
+  }
+}
+
+//Delete api for order 
+module.exports.DeleteOrder = async (req, res) => {
+  try {
+    const DeleteOrder = await Order.findOneAndDelete({ id: req.params.id });
+    if (!DeleteOrder) {
+      res.json({ message: "Enter the correct id", status: false });
+    } else {
+      res.send({ message: " Oders is deleted successfully", status: true });
+    }
+  } catch (error) {
+    res.send({ message: error.message, status: false });
+  }
 };
 
-module.exports.updateOrderAdmin = async (req, res) => {
-  await OrderAdmin.updateOne(
-    { _id: req.body.orderId },
-    {
-      orderStatus: req.body.type,
-    }
-  );
-  await Order.updateOne(
-    { _id: req.body.orderId, "orderStatus.type": req.body.type },
-    {
-      $set: {
-        "orderStatus.$": [
-          { type: req.body.type, date: new Date(), isCompleted: true },
-        ],
-      },
-    }
-  ).exec((error, order) => {
-    if (error) return res.status(400).json({ error });
-    if (order) {
-      res.status(201).json({ order });
-    }
-  });
-};
 
-module.exports.getCustomerOrders = async (req, res) => {
-  const orders = await Order.find({})
-    .populate("items.productId", "title")
-    .exec();
-  res.status(200).json({ orders });
-};
 
-module.exports.getCustomerOrdersAdmin = async (req, res) => {
-  const orders = await OrderAdmin.find({})
-    .populate("items.productId", "title")
-    .exec();
-  res.status(200).json({ orders });
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
