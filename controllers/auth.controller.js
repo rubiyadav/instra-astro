@@ -44,9 +44,6 @@ module.exports.isAuthenticated = function (req, res, next) {
 
 };
 
-
-
-
 // Verify
 module.exports.verify_Mobile_Number = async (req, res) => {
   const { mobile_Number, otp } = req.body;
@@ -134,7 +131,7 @@ module.exports.RestPasswordOtp = async (req, res) => {
   }
 };
 
-//login ------
+
 
 //new Password
 

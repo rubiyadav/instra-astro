@@ -1,29 +1,13 @@
-// const mongoose = require("mongoose");
-// const OrderSchema = new mongoose.Schema({
-
-//     User_id:{type:String},
-//     Cart_id:{type:String},
-//     Default_address:{type:String},
-//     OrderStatus:{type:String},
-//     Default_payment_id:{type:String},
-// },
-// {
-//     timestamps: true
-// })
-
-// module.exports = mongoose.model("order", OrderSchema);
-
-
 const { model, Schema } = require("mongoose");
 const orderSchema = new Schema(
   {
     user: {
-      type: Schema.Types.ObjectId,
+      type: String,
       ref: "user",
       required: true,
     },
     addressId: {
-      type: Schema.Types.ObjectId,
+      type: String,
       ref: "address",
       required: true,
     },
@@ -34,7 +18,7 @@ const orderSchema = new Schema(
     items: [
       {
         productId: {
-          type: Schema.Types.ObjectId,
+          type: String,
           ref: "Product",
         },
         payablePrice: {

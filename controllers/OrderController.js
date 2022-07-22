@@ -8,28 +8,28 @@ const Order = require("../models/Order");
 
 
 // post api for product orderd
-
 module.exports.postOrder = async (req, res) => {
-  let { user, addressId, totalAmount, items, productId, payablePrice
-    , purchasedQty, paymentStatus, paymentType, orderStatus, date, isCompleted ,} = req.body;
+  let { user, addressId, totalAmount, orderStatus, items, paymentStatus, paymentType} = req.body;
 
   try {
-    if (!(user && addressId && totalAmount && items && orderStatus && productId && payablePrice && purchasedQty && paymentStatus && paymentType && isCompleted && date  )) {
+    if (!(user &&
+      addressId &&
+      totalAmount &&
+      items &&
+      paymentStatus &&
+      paymentType &&
+      orderStatus)) {
       res.json({ message: "All fields are required", status: false });
     } else {
       const orders = await Order.create({
         user,
         addressId,
         totalAmount,
-        orderStatus,
         items,
-        productId,
-        payablePrice,
-        purchasedQty,
         paymentStatus,
         paymentType,
-        date,
-        isCompleted
+        orderStatus,
+  
       });
 
       if (!orders) {
@@ -46,7 +46,6 @@ module.exports.postOrder = async (req, res) => {
     res.json({ message: error.message, status: false });
   }
 };
-
 //get for order
 module.exports.getOrder = async (req, res) => {
   try {
@@ -69,22 +68,29 @@ module.exports.getOrder = async (req, res) => {
 
 //patch for order
 module.exports.patchOrder = async (req, res) => {
-  let { User_id, Cart_id, Default_address, OrderStatus, Default_payment_id } = req.body;
+  let { addressId, totalAmount, orderStatus, items, paymentStatus, paymentType
+} = req.body;
 
   try {
-    if (!(User_id && Cart_id && Default_address && OrderStatus && Default_payment_id)) {
+    if (!(
+      addressId &&
+      totalAmount &&
+      items &&
+      paymentStatus &&
+      paymentType &&
+      orderStatus)) {
       res.json({ message: "All fields are required", status: false });
     } else {
       const updatedOrder = await Order.findByIdAndUpdate({ _id: req.params.id }, {
-        User_id,
-        Cart_id,
-        Default_address,
-        OrderStatus,
-        Default_payment_id,
-        id: bookidgen("ID", 14522, 199585),
+        addressId,
+        totalAmount,
+        items,
+        paymentStatus,
+        paymentType,
+        orderStatus,
       });
       if (!updatedOrder) {
-        res.send('Unable to add payment');
+        res.send('Unable to get order');
       }
       res.send(updatedOrder);
     }

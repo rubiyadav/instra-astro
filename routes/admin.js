@@ -8,16 +8,16 @@ const { isAuthenticated } = require('../controllers/auth.controller')
 //Banners
 
 //post banner
-router.post('/Bannerpost', admin.postBanner)
+// router.post('/Bannerpost', admin.postBanner)
 
-//get banner
-router.get('/Bannerget/:id', admin.getBanner)
+// //get banner
+// router.get('/Bannerget/:id', admin.getBanner)
 
-//patch banner
-router.patch('/Bannerpatch/:id', admin.patchbanner)
+// //patch banner
+// router.patch('/Bannerpatch/:id', admin.patchbanner)
 
-//Delete
-router.delete('/Bannerdelete/:id', admin.DeleteBanner)
+// //Delete
+// router.delete('/Bannerdelete/:id', admin.DeleteBanner)
 
 
 //get all

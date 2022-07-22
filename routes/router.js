@@ -1,3 +1,5 @@
+const { required } = require('nodemon/lib/config');
+
 const router = require('express').Router();
 
 router.use('/auth', require('./auth.route'));
@@ -17,7 +19,9 @@ router.use('/cart', require('./cartRoutes'))
 
 router.use('/category', require('./topCategoryRoutes'))
 
-router.use('order',require('./orderRoutes'))
+router.use('/order', require('./orderRoutes'))
+
+router.use('/prescription',require('./prescriptionRoutes'))
 
 
 module.exports = router;
