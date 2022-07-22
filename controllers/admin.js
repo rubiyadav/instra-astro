@@ -3,13 +3,14 @@ const bookidgen = require("bookidgen");
 const moment = require("moment");
 // const product = require('../models/product')
 const { encrypt, compare } = require('../services/crypto');
-const User = require('../models/User');
+// const User = require('../models/User');
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 const jwt = require("jsonwebtoken");
 const JWTkey = 'rubi'
 const bcrypt = require("bcrypt")
+const Admin = require('../models/Admin')
 
 
 const sendSMS = async (to, otp) => {
@@ -31,7 +32,7 @@ module.exports.signUpUser = async (req, res) => {
   const { user_Name, mobile_Number, password } = req.body;
 
   // Check if user already exist
-  const Existing = await User.findOne({ mobile_Number })
+  const Existing = await Admin.findOne({ mobile_Number })
   if (Existing) {
     return res.send('Already existing');
   }
@@ -51,7 +52,7 @@ module.exports.signUpUser = async (req, res) => {
 const createUser = async (user_Name, mobile_Number, password) => {
   const hashedPassword = await encrypt(password);
   const otpGenerated = Math.floor(1000 + Math.random() * 90000)
-  const newUser = await User.create({
+  const newUser = await Admin.create({
     user_Name, mobile_Number,
     password: hashedPassword,
     otp: otpGenerated,
@@ -79,10 +80,10 @@ module.exports.login = async (req, res) => {
       res.status(400).send("All input is required");
     }
 
-    const user = await User.findOne({ mobile_Number });
+    const user = await Admin.findOne({ mobile_Number });
 
     if (!user) res.status(400).json({
-      message: 'this number is not registered'
+      message: 'This Number is not registered'
 
     })
 
@@ -100,5 +101,6 @@ module.exports.login = async (req, res) => {
   }
 
 };
+
 
 

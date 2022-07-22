@@ -7,7 +7,6 @@ const jwt = require("jsonwebtoken");
 const JWTkey = 'rubi'
 const bcrypt = require("bcrypt")
 
-
 const sendSMS = async (to, otp) => {
   const from = "+19287568632"
   await client.messages
@@ -43,6 +42,83 @@ module.exports.isAuthenticated = function (req, res, next) {
 
 
 };
+
+
+//SignUP
+module.exports.signUpUser = async (req, res) => {
+  const { user_Name, mobile_Number, password } = req.body;
+
+  // Check if user already exist
+  const Existing = await User.findOne({ mobile_Number })
+  if (Existing) {
+    return res.send('Already existing');
+  }
+  encryptedPassword = await bcrypt.hash(password, 10);
+
+
+  // create new user
+  const newUser = await createUser(user_Name, mobile_Number, password);
+  if (!newUser[0]) {
+    return res.status(400).send({
+      message: 'Unable to create new user',
+    });
+  }
+  res.send(newUser);
+};
+
+const createUser = async (user_Name, mobile_Number, password) => {
+  const hashedPassword = await encrypt(password);
+  const otpGenerated = Math.floor(1000 + Math.random() * 90000)
+  const newUser = await User.create({
+    user_Name, mobile_Number,
+    password: hashedPassword,
+    otp: otpGenerated,
+  });
+  if (!newUser) {
+    return [false, 'Unable to sign you up'];
+  }
+  try {
+    sendSMS(`+91${mobile_Number}`, otpGenerated)
+
+    return [true, newUser];
+  } catch (error) {
+    return [false, 'Unable to sign up, Please try again later', error];
+  }
+};
+
+//user login----
+module.exports.login = async (req, res) => {
+
+  try {
+    const { mobile_Number, password } = req.body;
+
+    if (!(mobile_Number && password)) {
+      res.status(400).send("All input is required");
+    }
+
+    const user = await User.findOne({ mobile_Number });
+
+    if (!user) res.status(400).json({
+      message: 'this number is not registered'
+
+    })
+
+    if (user && (await compare(password, user.password))) {
+      jwt.sign({ user_id: user._id }, JWTkey, { expiresIn: '3h' }, (err, token) => {
+        if (err) res.status(400).send("Invalid Credentials");
+        res.send({ user, token });
+      }
+      );
+
+    }
+
+  } catch (err) {
+    console.log(err);
+  }
+
+};
+
+
 
 // Verify
 module.exports.verify_Mobile_Number = async (req, res) => {
@@ -227,4 +303,6 @@ module.exports.updateUser = async (req, res) => {
     })
   }
 }
+
+
 

@@ -20,7 +20,7 @@ const upload = multer({ storage });
 
 //signUpUser
 
-router.post('/', admin.signUpUser);
+router.post('/signUp', admin.signUpUser);
 
 //verify--
 router.post('/verify', authController.verify_Mobile_Number);
@@ -35,7 +35,7 @@ router.post('/otpcheck', authController.RestPasswordOtp);
 router.post('/reset/:id', authController.RestPasswordLink);
 
 //login
-router.post('/login', admin.login);
+router.post('/login/user', admin.login);
 
 
 //new passsword
