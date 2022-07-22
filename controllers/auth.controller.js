@@ -65,7 +65,7 @@ module.exports.signUpUser = async (req, res) => {
       message: 'Unable to create new user',
     });
   }
-  res.status(400).json(newUser);
+  res.status(200).json(newUser);
 };
 
 const createUser = async (user_Name, mobile_Number, password) => {
@@ -159,7 +159,9 @@ module.exports.RestPassword = async (req, res) => {
     $set: { otp: otpGenerated },
   });
   if (!updatedUser) {
-    return res.send('Unable to Generate otp')
+    return res.status(400).json({
+      message: "Unable to Generate otp"
+    })
   }
   try {
     // sendSMS(`+91${mobile_Number}`, otpGenerated)
@@ -312,4 +314,38 @@ module.exports.updateUser = async (req, res) => {
 }
 
 
+
+
+
+//Forget password
+module.exports.ForgetPassword = async (req, res) => {
+  const { mobile_Number } = req.body;
+
+  // Check if user already exist
+  const user = await User.findOne({ mobile_Number })
+  if (!user) {
+    return res.status(400).json({
+      message: "User not existing"
+    });
+  }
+  const otpGenerated = Math.floor(10000 + Math.random() * 90000)
+  const updatedUser = await User.findByIdAndUpdate(user._id, {
+    $set: { otp: otpGenerated },
+  });
+  if (!updatedUser) {
+    return res.status(400).json({
+      message: "Unable to Generate otp"
+    })
+  }
+  try {
+    // sendSMS(`+91${mobile_Number}`, otpGenerated)
+    return res.status(200).json({
+      message: "SMSS Send",
+      Otp: otpGenerated
+    });
+  } catch (error) {
+    return res.send('Unable to Send Mail, Please try again later', error);
+  }
+
+};
 
