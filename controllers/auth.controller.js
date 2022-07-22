@@ -51,7 +51,9 @@ module.exports.signUpUser = async (req, res) => {
   // Check if user already exist
   const Existing = await User.findOne({ mobile_Number })
   if (Existing) {
-    return res.send('Already existing');
+    return res.status(400).json({
+      message: "Allready existing"
+    });
   }
   encryptedPassword = await bcrypt.hash(password, 10);
 
@@ -63,7 +65,7 @@ module.exports.signUpUser = async (req, res) => {
       message: 'Unable to create new user',
     });
   }
-  res.send(newUser);
+  res.status(400).json(newUser);
 };
 
 const createUser = async (user_Name, mobile_Number, password) => {
@@ -78,7 +80,7 @@ const createUser = async (user_Name, mobile_Number, password) => {
     return [false, 'Unable to sign you up'];
   }
   try {
-    sendSMS(`+91${mobile_Number}`, otpGenerated)
+    // sendSMS(`+91${mobile_Number}`, otpGenerated)
 
     return [true, newUser];
   } catch (error) {
@@ -93,7 +95,7 @@ module.exports.login = async (req, res) => {
     const { mobile_Number, password } = req.body;
 
     if (!(mobile_Number && password)) {
-      res.status(400).send("All input is required");
+      res.status(400).json({ message: "All input is required" });
     }
 
     const user = await User.findOne({ mobile_Number });
@@ -125,20 +127,21 @@ module.exports.verify_Mobile_Number = async (req, res) => {
   const { mobile_Number, otp } = req.body;
 
   const user = await User.findOne({ mobile_Number });
+  console.log(user)
   if (!user) {
     res.send('User not found');
   }
   if (user && user.otp !== otp) {
-    res.send('Invalid OTP');
+    res.status(400).json({
+      message: "Invalid otp"
+    });
   }
-  const updatedUser = await User.findByIdAndUpdate(user._id, {
+  const updatedUser = await User.findOneAndUpdate({ _id: user }, {
     $set: { active: true },
   });
 
   res.send(updatedUser);
 };
-
-
 //Reset Password
 
 module.exports.RestPassword = async (req, res) => {
@@ -147,7 +150,9 @@ module.exports.RestPassword = async (req, res) => {
   // Check if user already exist
   const user = await User.findOne({ mobile_Number })
   if (!user) {
-    return res.send('No User existing');
+    return res.status(400).json({
+      message: "User not existing"
+    });
   }
   const otpGenerated = Math.floor(10000 + Math.random() * 90000)
   const updatedUser = await User.findByIdAndUpdate(user._id, {
@@ -157,7 +162,7 @@ module.exports.RestPassword = async (req, res) => {
     return res.send('Unable to Generate otp')
   }
   try {
-    sendSMS(`+91${mobile_Number}`, otpGenerated)
+    // sendSMS(`+91${mobile_Number}`, otpGenerated)
     return res.status(200).json({
       message: "SMSS Send",
       Otp: otpGenerated
@@ -178,7 +183,9 @@ module.exports.RestPasswordLink = async (req, res) => {
 
   const user = await User.findOne({ _id: req.params.id })
   if (!user) {
-    return res.send('No User existing');
+    return res.status(400).json({
+      message: "User not existing"
+    });
   }
   const hashedPassword = await encrypt(newpassword);
   const updatedUser = await User.findByIdAndUpdate(user._id, {
