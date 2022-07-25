@@ -25,10 +25,9 @@ const productSchema = new Schema(
             required: true,
         },
 
-        productPictures: {
-            type: Array,
-            required: true,
-        },
+        productPictures: [
+            { img: { type: String } }
+        ],
     },
     { timestamps: true }
 );

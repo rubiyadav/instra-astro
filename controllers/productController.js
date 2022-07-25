@@ -117,7 +117,14 @@ module.exports.viewProductAfterPayment = async (req, res) => {
 };
 
 module.exports.addProduct = async (req, res) => {
-  let profile = req.files;
+  let productPictures = [];
+  console.log(req.files)
+
+  if (req.files.length > 0) {
+    productPictures = req.files.map((file) => {
+      return { img: file.filename };
+    });
+  }
   try {
     const {
       description,
@@ -126,10 +133,10 @@ module.exports.addProduct = async (req, res) => {
       country_origin,
       disclaimer,
       price,
-  
+
     } = req.body;
 
-   
+
     const create = await Product.create({
       description,
       title,
@@ -137,10 +144,12 @@ module.exports.addProduct = async (req, res) => {
       country_origin,
       disclaimer,
       price,
-      productPictures: profile,
+      productPictures
+
     });
 
-    res.status(201).json({ msg: " product sccessfully added" });
+    res.status(201).json({ msg: "product sccessfully added" });
+
   } catch (error) {
     console.log(error);
   }
@@ -148,8 +157,11 @@ module.exports.addProduct = async (req, res) => {
 
 module.exports.getAllProduct = async (req, res) => {
   try {
-    const getProduct = await Product.find();
-    res.status(200).json({ data: getProduct });
+    const getProduct = await Product.find({});
+    res.status(200).json({
+      message: "Get all Product",
+      getProduct
+    });
   } catch (error) {
     console.log(error);
   }
