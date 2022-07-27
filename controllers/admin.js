@@ -27,6 +27,7 @@ const sendSMS = async (to, otp) => {
     });
 }
 
+
 //SignUP
 module.exports.signUpUser = async (req, res) => {
   const { user_Name, mobile_Number, password } = req.body;

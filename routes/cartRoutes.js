@@ -3,18 +3,18 @@ const router = app.Router();
 const { isAuthenticated } = require('../controllers/auth.controller')
 const cart = require("../controllers/CartController");
 
-//port Cart 
-router.post('/cart', isAuthenticated, cart.postCart)
-// router.post('/cart',cart,isAuthenticated.postCart)
+//Add To  Cart 
+router.post('/addcart/:id', isAuthenticated, cart.addToCart)
 
 //get Cart
-router.get('/CartByID/:id',isAuthenticated,cart.getCart)
+router.get('/cart', cart.getCart)
 
 //Delete api
-router.patch('/cartupdate/:id',isAuthenticated, cart.CartPatch)
+router.put('/cartupdate/:id', cart.updateQuantity)
 
-//Delete Cart
-router.delete('/CartDelete/:id',isAuthenticated,cart.DeleteCart)
-
+// //Delete Cart
+router.delete('/CartDelete/:id',cart.deletecart)
 
 module.exports = router;
+
+

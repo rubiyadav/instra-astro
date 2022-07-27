@@ -7,6 +7,12 @@ const jwt = require("jsonwebtoken");
 const JWTkey = 'rubi'
 const bcrypt = require("bcrypt")
 
+const generateJwtToken = (id) => {
+  return jwt.sign({ id },JWTkey, {
+    expiresIn: "7d",
+  });
+};
+
 const sendSMS = async (to, otp) => {
   const from = "+19287568632"
   await client.messages
@@ -21,28 +27,50 @@ const sendSMS = async (to, otp) => {
     });
 }
 
+// module.exports.isAuthenticated = function (req, res, next) {
+//   console.log(req.headers)
+//   var token = req.headers["x-access-token"];
+//   console.log("mytoken is " + token);
+//   if (!token) res.send("You have to login first before you can access your lists.")
+//   jwt.verify(token, JWTkey, (err, verify) => {
+//     if (err) {
+//       res.send("not Autori")
+//     } else {
+//       req.user = verify
+//       next()
+//     }
+//   })
+// };
 
-module.exports.isAuthenticated = function (req, res, next) {
-  console.log(req.headers)
-  var token = req.headers["x-access-token"];
-  console.log("mytoken is " + token);
-  if (!token) res.send("You have to login first before you can access your lists.")
 
-  jwt.verify(token, JWTkey, (err) => {
-
-    if (err) {
-
-      res.send("not Autori")
-
-    } else {
-      next()
-
-    }
-  })
-
+exports.isAuthenticated = (req, res, next) => {
+  if (req.headers.authorization) {
+    console.log('entered authorization')
+    const token = req.headers.authorization.split(" ")[1];
+    const user = jwt.verify(token, JWTkey);
+    req.user = user.id;
+    next();
+  } else {
+    return res.status(401).json({ message: "Authorization required" });
+  }
 
 };
 
+exports.userMiddleware = (req, res, next) => {
+  console.log(req.user);
+  user.findById(req.user).exec((err, user) => {
+    if (user) {
+      next();
+    }
+    if
+      (err) {
+      return res.status(400).json({
+        message: "User access denied"
+      })
+    }
+
+  })
+};
 
 //SignUP
 module.exports.signUpUser = async (req, res) => {
@@ -89,6 +117,7 @@ const createUser = async (user_Name, mobile_Number, password) => {
 };
 
 //user login----
+
 module.exports.login = async (req, res) => {
 
   try {
@@ -106,11 +135,15 @@ module.exports.login = async (req, res) => {
     })
 
     if (user && (await compare(password, user.password))) {
-      jwt.sign({ user_id: user._id }, JWTkey, { expiresIn: '3h' }, (err, token) => {
-        if (err) res.status(400).send("Invalid Credentials");
-        res.send({ user, token });
-      }
-      );
+      const token = generateJwtToken(user._id);
+
+      res.status(200).json({
+        user: user,
+        token: token
+      });
+      console.log("user", user)
+
+
 
     }
 
@@ -119,8 +152,6 @@ module.exports.login = async (req, res) => {
   }
 
 };
-
-
 
 // Verify
 module.exports.verify_Mobile_Number = async (req, res) => {
@@ -172,10 +203,7 @@ module.exports.RestPassword = async (req, res) => {
   } catch (error) {
     return res.send('Unable to Send Mail, Please try again later', error);
   }
-
 };
-
-
 //RestPasswordLink ---
 
 module.exports.RestPasswordLink = async (req, res) => {
@@ -215,8 +243,6 @@ module.exports.RestPasswordOtp = async (req, res) => {
     });
   }
 };
-
-
 
 //new Password
 
@@ -287,7 +313,6 @@ module.exports.patchRoles = async (req, res) => {
   }
 }
 
-
 //Update user Profile
 
 module.exports.updateUser = async (req, res) => {
@@ -312,10 +337,6 @@ module.exports.updateUser = async (req, res) => {
     })
   }
 }
-
-
-
-
 
 //Forget password
 module.exports.ForgetPassword = async (req, res) => {

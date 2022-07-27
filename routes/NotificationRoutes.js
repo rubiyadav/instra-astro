@@ -7,3 +7,4 @@ router.post("/add-notifaction", isAuthenticated, AddNotifaction);
 router.get("/notifaction",isAuthenticated, getNotifaction);
 
 module.exports = router;
+

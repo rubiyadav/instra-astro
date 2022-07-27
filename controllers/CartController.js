@@ -1,161 +1,161 @@
-// // const Cart = require("../models/Cart");
+const Cart = require("../models/Cart");
+const moment = require("moment")
 
-const cart = require('../models/cart')
-const bookidgen = require("bookidgen");
-// Cart post api
-
-module.exports.postCart = async (req, res) => {
-  let { User_id, Products } = req.body;
-
+exports.addToCart = async (req, res, next) => {
+  console.log("user", req.user)
   try {
-    if (!(User_id && Products)) {
-      res.json({ message: "All fields are required", status: false });
-    } else {
-      const Cart = await cart.create({
-        User_id, Products,
-        id: bookidgen("ID", 14522, 199585),
-      });
+    const product = req.params.id;
+    let cart = await Cart.findOne({
+      user: req.user,
+    });
 
-      if (!Cart) {
-        res.json({ message: "Cart is not created", status: false });
-      } else {
-        res.json({
-          message: "Add to Cart is  successfully",
-          data: Cart,
-          status: true,
-        });
-      }
+    if (!cart) {
+      cart = await createCart(req.user);
     }
+    console.log("cart", cart)
+
+    const productIndex = cart.products.findIndex((cartProduct) => {
+      return cartProduct.product.toString() == product;
+    });
+    console.log("cart", productIndex)
+
+
+    if (productIndex < 0) {
+      cart.products.push({ product });
+    } else {
+      cart.products[productIndex].quantity++;
+    }
+
+    await cart.save();
+
+    return res.status(200).json({
+      msg: "product added to cart",
+    });
   } catch (error) {
-    res.json({ message: error.message, status: false });
+    next(error);
   }
 };
 
+const createCart = async (userId) => {
+  try {
+    const cart = await Cart.create({ user: userId });
 
+    return cart;
+  } catch (error) {
+    throw error;
+  }
+};
+
+//Update 
+exports.updateQuantity = async (req, res, next) => {
+  try {
+    const product = req.params.id;
+    const { quantity } = req.body;
+    let cart = await Cart.findOne({
+      user: req.user,
+    });
+
+    if (!cart) {
+      cart = await createCart(req.user);
+    }
+
+    const productIndex = cart.products.findIndex((cartProduct) => {
+      return cartProduct.product.toString() == product;
+    });
+
+    if (productIndex < 0 && quantity > 0) {
+      cart.products.push({ product, quantity });
+    } else if (productIndex >= 0 && quantity > 0) {
+      cart.products[productIndex].quantity = quantity;
+    } else if (productIndex >= 0) {
+      cart.products.splice(productIndex, 1);
+    }
+
+    await cart.save();
+
+    const cartResponse = await getCartResponse(cart);
+
+    return res.status(200).json({
+      success: true,
+      msg: "cart updated",
+      cart: cartResponse,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+const getCartResponse = async (cart) => {
+  try {
+    await cart.populate([
+      { path: "products.product", select: { reviews: 0 } },
+      // { path: "coupon", select: "couponCode discount expirationDate" },
+    ]);
+
+    if (cart.coupon && moment().isAfter(cart.coupon.expirationDate, "day")) {
+      cart.coupon = undefined;
+      cart.save();
+    }
+    const cartResponse = cart.toObject();
+
+    let discount = 0;
+    let total = 0;
+    cartResponse.products.forEach((cartProduct) => {
+      cartProduct.total = cartProduct.product.price * cartProduct.quantity;
+      total += cartProduct.total;
+    });
+
+    if (cartResponse.coupon) {
+      discount = 0.01 * cart.coupon.discount * total;
+    }
+
+    cartResponse.subTotal = total;
+    cartResponse.discount = discount;
+    cartResponse.total = total - discount;
+    cartResponse.shipping = 10;
+
+    return cartResponse;
+  } catch (error) {
+    throw error;
+  }
+};
 //get api for Cart
-
-module.exports.getCart = async (req, res) => {
+exports.getCart = async (req, res, next) => {
+  console.log(req.user)
   try {
-    const Cart = await cart.findOne({ id: req.params.id });
-    if (!Cart) {
-      res.json({ message: "Enter the correct id", status: false });
-    } else {
-      res.json({
-        message: "Cart is found",
-        data: Cart,
-        status: true
-      });
+    const cart = await Cart.findOne(req.user);
 
+    const cartResponse = await getCartResponse(cart);
 
-    }
+    return res.status(200).json({
+      success: true,
+      msg: "cart",
+      cart: cartResponse
+    })
   } catch (error) {
-    res.json({ message: error.message, status: false });
+    next(error);
   }
-};
-
-
-//Cart for Patch
-
-module.exports.CartPatch = async (req, res, next) => {
-  let { User_id, Products } = req.body;
-  try {
-    const Cart = await cart.findOneAndUpdate(
-      { _id: req.params.id },
-      {
-        User_id,
-        Products,
-
-      },
-      { new: true }
-    );
-    if (!Cart) {
-      res.json({ message: "Carts not updated", status: false });
-    } else {
-      res.json({
-        message: "Carts updated successfully",
-        status: true,
-        Cart: Cart,
-      });
-    }
-  } catch (error) { }
 }
 
 
-//Delete Api
-module.exports.DeleteCart = async (req, res) => {
+
+//Removed
+exports.deletecart = async (req, res) => {
   try {
-    const Cart = await cart.findOneAndDelete({ id: req.params.id });
-    if (!Cart) {
-      res.json({ message: "Enter the correct id", status: false });
-    } else {
-      res.send({ message: "carts is deleted successfully", status: true });
-    }
-  } catch (error) {
-    res.send({ message: error.message, status: false });
+    await Cart.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Cart Remove Successfully" });
+  } catch (err) {
+    res.status(500).json({ error: "Something Went Wrong" });
   }
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+exports.removeCart = async (req, res) => {
+  try {
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
 
 
 
