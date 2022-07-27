@@ -28,8 +28,11 @@ const productSchema = new Schema(
         productPictures: [
             { img: { type: String } }
         ],
+        CategoryID: {
+            type: Schema.Types.ObjectId,
+            ref: "Category"
+        },
     },
     { timestamps: true }
 );
 module.exports = model('product', productSchema)
-

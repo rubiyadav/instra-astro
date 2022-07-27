@@ -133,6 +133,7 @@ module.exports.addProduct = async (req, res) => {
       country_origin,
       disclaimer,
       price,
+      CategoryID
 
     } = req.body;
 
@@ -144,7 +145,8 @@ module.exports.addProduct = async (req, res) => {
       country_origin,
       disclaimer,
       price,
-      productPictures
+      productPictures,
+      CategoryID
 
     });
 
