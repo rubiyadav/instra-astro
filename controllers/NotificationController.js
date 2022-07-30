@@ -1,35 +1,30 @@
-const moment = require('moment')
-const Notifaction = require('../models/notification');
 
+const UserSetting = require('../models/userSetting')
 
-exports.AddNotifaction = async (req, res) => {
+module.exports.UserSettings = async (req, res) => {
+    let { UserId, ActiveNotification } = req.body;
+
     try {
-        const orderNotifaction = `Congratulation your Order is Successfully done ${moment().format('DD-MM-YYYY')}`
-        const notifaction = new Notifaction()
-        notifaction.user = req.user
-        notifaction.notifaction = orderNotifaction
-        notifaction.save()
-        return res.status(201).json({
-            message: "Congratulation your order confirm",
-            notifaction
-        })
+        if (!(UserId && ActiveNotification)) {
+            res.json({ message: "All fields are required", status: false });
+        } else {
 
+            const SettingUser = await  UserSetting.findOne({ UserId });
+            if (! SettingUser) {
+                const NewUserSetting = await UserSetting.create({ UserId, ActiveNotification });
+                if (NewUserSetting) res.status(200)({ message: "UserSetting Updated", data: NewUserSetting, status: true, });
+                res.status(400).json({ message: "Usersetting  not Updated", status: false });
+            } else {
+                const UpdateUserSetting = await UserSetting.findOneAndUpdate({ UserId }, { ActiveNotification });
+                if (UpdateUserSetting) res.status(200).json({ message: "UserSetting Updated", data: UpdateUserSetting, status: true, });
+                res.status(400).json({ message: "Usersetting  not Updated", status: false });
+            }
+        }
     } catch (error) {
-        console.log(error)
-        res.status(500).json({
-            message: "Something Went Wrong"
-        })
+        res.status(400).json({ message: error.message, status: false });
     }
-}
+};
 
-exports.getNotifaction = async (req, res) => {
-    try {
-        const getNotifaction = await Notifaction.find({ user: req.user })
-            .populate('user')
-        res.status(200).json({ message: "Get Notifaction Successfully", getNotifaction })
-    } catch (error) {
-        res.status(500).json({
-            message: error.message
-        })
-    }
-}
+
+
+

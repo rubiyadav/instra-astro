@@ -5,27 +5,29 @@ const admin = require("../controllers/admin");
 
 const { isAuthenticated } = require('../controllers/auth.controller')
 
-//Banners
+const app = require("express");
+const path = require("path");
+var multer = require("multer");
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/images");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
 
-//post banner
-// router.post('/Bannerpost', admin.postBanner)
-
-// //get banner
-// router.get('/Bannerget/:id', admin.getBanner)
-
-// //patch banner
-// router.patch('/Bannerpatch/:id', admin.patchbanner)
-
-// //Delete
-// router.delete('/Bannerdelete/:id', admin.DeleteBanner)
+var upload = multer({ storage: storage });
 
 
-//get all
-
-// router.get('/Productall', isAuthenticated, admin.getProductAll);
-
-router.post('/login', admin.login);
-router.post('/', admin.signUpUser);
+router.post('/login-admin', admin.login);
+router.post('/signup',admin.signUpUser);
+router.post('/user-blog', upload.single("myField"), isAuthenticated ,admin.postuserBlogs)
+router.get('/get-blogs/:id', isAuthenticated, admin.ViewDataBlogs,)
+router.patch('/edit-user-blog/:id', upload.single("myField"), isAuthenticated,admin.UpdateBlogs)
+router.delete('/remove-blog/:id', isAuthenticated, admin.RemovedBlogs)
+router.post('/add-feedback', isAuthenticated,admin.UserFeedback)
+router.get('/view-feedback', isAuthenticated,admin.ViewAllFeedback)
 
 
 module.exports = router;

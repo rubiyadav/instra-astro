@@ -1,54 +1,28 @@
 const router = require('express').Router();
-const admin = require('../controllers/auth.controller');
 const authController = require('../controllers/auth.controller');
-const multer = require('multer');
+const { isAuthenticated } = require('../controllers/auth.controller')
+
+const app = require("express");
 const path = require("path");
-
-
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) { cb(null, path.join(path.dirname(__dirname), "public/uploads")); },
-
+var multer = require("multer");
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/images");
+  },
   filename: function (req, file, cb) {
-    cb(null, file.originalname)
-  }
+    cb(null, file.originalname);
+  },
 });
-const upload = multer({ storage });
 
+var upload = multer({ storage: storage });
 
+router.post('/signUp', isAuthenticated,authController.signUpUser);
 
+router.post('/verify', isAuthenticated,authController.verify_Mobile_Number);
+router.post('/update-profile', isAuthenticated, authController.updateUserProfile)
+router.get('/view-user-profiles', isAuthenticated, authController.GetUserProfiles)
+router.post('/user-blog', upload.single("myField"), isAuthenticated, authController.postuserBlogs)
+router.patch('/edit-user-blog/:id', upload.single("myField"), isAuthenticated,authController.UpdateBlogs)
 
-//signUpUser
-
-router.post('/signUp', admin.signUpUser);
-
-//verify--
-router.post('/verify', authController.verify_Mobile_Number);
-
-//resetpassword
-router.post('/resetpassword', authController.RestPassword);
-
-//otpcheck
-router.post('/otpcheck', authController.RestPasswordOtp);
-
-//RestPasswordLink
-router.post('/reset/:id', authController.RestPasswordLink);
-
-//login
-router.post('/login/user', admin.login);
-
-
-//new passsword
-router.post('/changePassword', authController.newPassword)
-
-//patch api 
-router.patch('/profile/:id', authController.patchEditProfile)
-
-//patch roles
-router.patch('/rolespatch/:id', authController.patchRoles)
-
-router.patch('/update-user/:id', authController.updateUser)
-
-router.patch('/update-user/:id', upload.single("profile"), authController.updateUser)
 
 module.exports = router;

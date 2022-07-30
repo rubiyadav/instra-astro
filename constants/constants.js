@@ -3,7 +3,7 @@ require('dotenv').config();
 module.exports = {
   allowedOrigins: ['http://localhost:3000/'],
   JWT_SECRET: 'thisIskey',
-  OTP_LENGTH: 10,
+  OTP_LENGTH: 5,
   OTP_CONFIG: {
     upperCaseAlphabets: false,
     specialChars: false,

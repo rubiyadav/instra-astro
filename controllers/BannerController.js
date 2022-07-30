@@ -1,6 +1,7 @@
 const Banner = require("../models/Banner");
 const ObjectId = require("mongodb").ObjectID;
 
+//pos Banner--
 module.exports.addBanner = async (req, res) => {
   const banner = req.files;
 
@@ -10,13 +11,17 @@ module.exports.addBanner = async (req, res) => {
         bannerImage: element.filename,
       });
 
-      res.status(201).json({ msg: "Banner successfully added" });
+      res.status(201).json({
+        msg: "Banner successfully added",
+        data: banner,
+      status:true});
     });
   } catch (error) {
     console.log(error);
   }
 };
 
+//Get Banner
 module.exports.getBanner = async (req, res) => {
   try {
     const getBanner = await Banner.find();
@@ -26,6 +31,7 @@ module.exports.getBanner = async (req, res) => {
   }
 };
 
+//Update Banner--
 module.exports.editBanner = async (req, res) => {
   const banner = req.file ? req.file.filename : currentImage;
   try {
@@ -37,18 +43,23 @@ module.exports.editBanner = async (req, res) => {
         bannerImage: banner,
       }
     );
-    res.status(200).json({ msg: "Banner successfully edited" });
+    res.status(200).json({ msg: "Banner successfully Updated" });
   } catch (error) {
     console.log(error);
   }
 };
 
+//Delete Banner-----
 module.exports.deleteBanner = async (req, res) => {
   try {
     const response = await Banner.findByIdAndDelete({
       _id: ObjectId(req.params.id),
     });
-    res.status(200).send({ msg: "Banner deleted successfully" });
+    res.status(200).send({
+      msg: "Banner deleted successfully",
+      response: response,
+      status:true
+});
   } catch (error) {
     console.log(error);
   }

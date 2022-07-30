@@ -18,29 +18,17 @@ const AdminSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  active: {
-    type: Boolean,
-    default: false,
-  },
-  otp: {
-    type: String,
-    required: true,
-  },
   profile: {
     type: String,
     required: false
   },
-  Name: {
+  email_ID: {
     type: String,
     required: false
   },
-  roles: {
-    type: String,
-    default: 'customer'
-  }
-
 
 });
 
 module.exports = mongoose.model('admin', AdminSchema);
+
 

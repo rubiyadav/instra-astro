@@ -2,51 +2,33 @@ const mongoose = require('mongoose');
 const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema({
-  user_Name: {
-    type: String,
-    required: false,
-  },
-  mobile_Number: {
-    type: String,
-    required: true,
+  mobile_Number: {type: String,required: true},
 
-  },
-  created: {
-    type: String,
-    default: new Date().toISOString(),
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  active: {
-    type: Boolean,
-    default: false,
-  },
-  otp: {
-    type: String,
-    required: true,
-  },
-  profile: {
-    type: String,
-    required: false
-  },
-  Name: {
-    type: String,
-    required: false
-  },
-  roles: {
-    type: String,
-    default: 'customer'
-  }
+  otp: {type: String,required: true},
+  
+  first_Name: {type: String,required: false},
+
+  last_Name:{type:String},
+
+  gender:{type:String},
+
+  time_of_Birth:{type:String},
+
+  place_of_Birth:{type:String},
+
+  profile_Images:{type:String},
+
+  ReferCode:{type:String},
+
+ 
+},
+
+  { timestamps: true }
+);
 
 
-});
-userSchema.methods = {
-  authenticate: async function (password) {
-    return await bcrypt.compare(password, this.hash_password)
-  }
-};
+
+
 
 module.exports = mongoose.model('User', userSchema);
 
