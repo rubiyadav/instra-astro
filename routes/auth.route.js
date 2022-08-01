@@ -16,13 +16,13 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage });
 
-router.post('/signUp',authController.signUpUser);
+router.post('/signUp', authController.signUpUser);
 
-router.post('/verify', isAuthenticated,authController.verify_Mobile_Number);
+router.post('/verify', authController.verify_Mobile_Number);
 router.post('/update-profile', isAuthenticated, authController.updateUserProfile)
 router.get('/view-user-profiles', isAuthenticated, authController.GetUserProfiles)
 router.post('/user-blog', upload.single("myField"), isAuthenticated, authController.postuserBlogs)
-router.patch('/edit-user-blog/:id', upload.single("myField"), isAuthenticated,authController.UpdateBlogs)
+router.patch('/edit-user-blog/:id', upload.single("myField"), isAuthenticated, authController.UpdateBlogs)
 
 
 module.exports = router;
