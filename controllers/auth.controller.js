@@ -88,11 +88,8 @@ module.exports.signUpUser = async (req, res) => {
   }else{
   const ReferCode = otp.generateOTP() 
     const newUser = await User.create({ mobile_Number, otp: otpGenerated, ReferCode });
-    const wallet = await Wallet.create({})
-    const notification = await Notifications.create({})
-    
-    
-
+    // const wallet = await Wallet.create({})
+    // const notification = await Notifications.create({})
     
    sendSMS(`+91${mobile_Number}`, otpGenerated)
    if (!newUser) res.status(400).json({message:"Unable to sign you up"});
