@@ -8,4 +8,4 @@ Feedback: {type: String},
 }, 
  { timestamps: true});
 
-module.exports = mongoose.model('Feedback', FeedbackSchema);
+module.exports = mongoose.model('feedback', FeedbackSchema);

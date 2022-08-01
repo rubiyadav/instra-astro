@@ -6,7 +6,9 @@ const client = require('twilio')(accountSid, authToken);
 const jwt = require("jsonwebtoken");
 const JWTkey = 'rubi'
 const otp = require('../services/OTP');
-const blog  = require('../models/blog')
+const blog = require('../models/blog')
+const Wallet = require('../models/wallet')
+const Notifications = require('../models/userSetting')
 // const { status } = require('express/lib/response');
 
 const generateJwtToken = (id) => {
@@ -85,7 +87,13 @@ module.exports.signUpUser = async (req, res) => {
    
   }else{
   const ReferCode = otp.generateOTP() 
-   const newUser = await User.create({mobile_Number, otp: otpGenerated,ReferCode});
+    const newUser = await User.create({ mobile_Number, otp: otpGenerated, ReferCode });
+    const wallet = await Wallet.create({})
+    const notification = await Notifications.create({})
+    
+    
+
+    
    sendSMS(`+91${mobile_Number}`, otpGenerated)
    if (!newUser) res.status(400).json({message:"Unable to sign you up"});
    res.status(200).json(newUser);
