@@ -17,6 +17,8 @@ router.use('/banner', require('./bannerRoutes'))
 
 router.use('/notification', require('./usersettingRoutes'))
 
+router.use('/wallet',require('./walletRoutes'))
+
 
 
 module.exports = router;

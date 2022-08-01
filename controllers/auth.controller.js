@@ -7,8 +7,9 @@ const jwt = require("jsonwebtoken");
 const JWTkey = 'rubi'
 const otp = require('../services/OTP');
 const blog = require('../models/blog')
-const Wallet = require('../models/wallet')
-const Notifications = require('../models/userSetting')
+// const Wallet = require('../models/wallet')
+const Notifications = require('../models/userSetting');
+const wallet = require('../models/wallet');
 // const { status } = require('express/lib/response');
 
 const generateJwtToken = (id) => {
@@ -61,8 +62,6 @@ exports.userMiddleware = (req, res, next) => {
 };
 
 
-
-
 // Verify
 module.exports.verify_Mobile_Number = async (req, res) => {
   const { mobile_Number, otp } = req.body;
@@ -73,31 +72,31 @@ module.exports.verify_Mobile_Number = async (req, res) => {
   res.status(200).json({token});
 };
 
-
+//SignUp
 module.exports.signUpUser = async (req, res) => {
-  const {  mobile_Number } = req.body;
+  const { mobile_Number } = req.body;
   let Existing = await User.findOne({ mobile_Number })
   const otpGenerated = Math.floor(100000 + Math.random() * 900000)
-  if (Existing) { 
-    Existing.otp= otpGenerated
-    const existinguser= await Existing.save()
-    sendSMS(`+91${mobile_Number}`, otpGenerated)
+  if (Existing) {
+    Existing.otp = otpGenerated
+    const existinguser = await Existing.save()
+    await wallet.create({ userId: existinguser._id })
+    
+    // sendSMS(`+91${mobile_Number}`, otpGenerated)
     if (existinguser) res.status(200).json(existinguser);
-    res.status(400).json({message:"no otp"});
-   
-  }else{
-  const ReferCode = otp.generateOTP() 
+    res.status(400).json({ message: "no otp" });
+
+  } else {
+    const ReferCode = otp.generateOTP()
     const newUser = await User.create({ mobile_Number, otp: otpGenerated, ReferCode });
-    const wallet = await Wallet.create({})
-    const notification = await Notifications.create({})
-    
-    
-   sendSMS(`+91${mobile_Number}`, otpGenerated)
-   if (!newUser) res.status(400).json({message:"Unable to sign you up"});
-   res.status(200).json(newUser);
+    const wallet = await wallet.create({ UserId: newUser._id })
+    const notification = await Notifications.create({ UserId: newUser._id })
+
+    // sendSMS(`+91${mobile_Number}`, otpGenerated)
+    if (!newUser) res.status(400).json({ message: "Unable to sign you up" });
+    res.status(200).json({ newUser, wallet, notification });
   }
 };
-
 
 
 //patch api

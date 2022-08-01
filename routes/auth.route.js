@@ -16,7 +16,7 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage });
 
-router.post('/signUp', isAuthenticated,authController.signUpUser);
+router.post('/signUp',authController.signUpUser);
 
 router.post('/verify', isAuthenticated,authController.verify_Mobile_Number);
 router.post('/update-profile', isAuthenticated, authController.updateUserProfile)

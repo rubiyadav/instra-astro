@@ -18,7 +18,9 @@ const userSchema = new mongoose.Schema({
 
   profile_Images:{type:String},
 
-  ReferCode:{type:String},
+  ReferCode: { type: String },
+  // balance: { type: Number, default: 0 }
+
 
  
 },
