@@ -27,6 +27,7 @@
     "nodemon": "^2.0.16",
     "otp-generator": "^4.0.0",
     "path": "^0.12.7",
+    "request": "^2.88.2",
     "twilio": "^3.78.0"
   }
 }

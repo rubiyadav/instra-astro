@@ -6,7 +6,7 @@ const client = require('twilio')(accountSid, authToken);
 const jwt = require("jsonwebtoken");
 const JWTkey = 'rubi'
 const otp = require('../services/OTP');
-const blog = require('../models/blog')
+
 // const Wallet = require('../models/wallet')
 const Notifications = require('../models/userSetting');
 const wallet = require('../models/wallet');
@@ -73,6 +73,7 @@ module.exports.verify_Mobile_Number = async (req, res) => {
 };
 
 //SignUp
+
 module.exports.signUpUser = async (req, res) => {
   const { mobile_Number } = req.body;
   let Existing = await User.findOne({ mobile_Number })
@@ -80,8 +81,8 @@ module.exports.signUpUser = async (req, res) => {
   if (Existing) {
     Existing.otp = otpGenerated
     const existinguser = await Existing.save()
-    await wallet.create({ userId: existinguser._id })
-    
+
+
     // sendSMS(`+91${mobile_Number}`, otpGenerated)
     if (existinguser) res.status(200).json(existinguser);
     res.status(400).json({ message: "no otp" });
@@ -89,12 +90,12 @@ module.exports.signUpUser = async (req, res) => {
   } else {
     const ReferCode = otp.generateOTP()
     const newUser = await User.create({ mobile_Number, otp: otpGenerated, ReferCode });
-    const wallet = await wallet.create({ UserId: newUser._id })
+    const Wallet = await wallet.create({ UserId: newUser._id })
     const notification = await Notifications.create({ UserId: newUser._id })
 
     // sendSMS(`+91${mobile_Number}`, otpGenerated)
     if (!newUser) res.status(400).json({ message: "Unable to sign you up" });
-    res.status(200).json({ newUser, wallet, notification });
+    res.status(200).json({ newUser, Wallet, notification });
   }
 };
 
@@ -134,67 +135,67 @@ module.exports.GetUserProfiles = async (req, res, next) => {
 
 //post for blog user
 
-module.exports.postuserBlogs = async (req, res) => {
-  let photo = req.body
-  photo['blog_Images'] = [req.file.originalname]
-  let { Date, User_Name, sub_Title, Intro, blog_Images } = photo;
+// module.exports.postuserBlogs = async (req, res) => {
+//   let photo = req.body
+//   photo['blog_Images'] = [req.file.originalname]
+//   let { Date, User_Name, sub_Title, Intro, blog_Images } = photo;
 
-  try {
-    if (!(Date && User_Name && sub_Title && Intro && blog_Images)) {
-      res.status(400).json({ message: "All fields are required", status: false });
-    } else {
-      const getResponce = await blog.create({
-        User_Name,
-        Date,
-        sub_Title,
-        Intro,
-        blog_Images
-      });
+//   try {
+//     if (!(Date && User_Name && sub_Title && Intro && blog_Images)) {
+//       res.status(400).json({ message: "All fields are required", status: false });
+//     } else {
+//       const getResponce = await blog.create({
+//         User_Name,
+//         Date,
+//         sub_Title,
+//         Intro,
+//         blog_Images
+//       });
 
-      if (!getResponce) {
-        res.status(400).json({ message: "User Blogs  is not created", status: false });
-      } else {
-        res.status(200).json({
-          message: "User Bloges is created successfully",
-          data: getResponce,
-          status: true,
-        });
-      }
-    }
-  } catch (error) {
-    res.status(400).json({ message: error.message, status: false });
-  }
-};
+//       if (!getResponce) {
+//         res.status(400).json({ message: "User Blogs  is not created", status: false });
+//       } else {
+//         res.status(200).json({
+//           message: "User Bloges is created successfully",
+//           data: getResponce,
+//           status: true,
+//         });
+//       }
+//     }
+//   } catch (error) {
+//     res.status(400).json({ message: error.message, status: false });
+//   }
+// };
 
 
-//update blog for user
+// //update blog for user
 
-module.exports.UpdateBlogs = async (req, res) => {
-  let photo = req.body
-  photo['blog_Images'] = [req.file.originalname]
-  let { Date, User_Name, sub_Title, Intro, blog_Images
-  } = req.body;
+// module.exports.UpdateBlogs = async (req, res) => {
+//   let photo = req.body
+//   photo['blog_Images'] = [req.file.originalname]
+//   let { Date, User_Name, sub_Title, Intro, blog_Images
+//   } = req.body;
 
-  try {
-    if (!(Date && User_Name && sub_Title && Intro && blog_Images)) {
-      res.json({ message: "All fields are required", status: false });
-    } else {
-      const updatedBlogs = await blog.findByIdAndUpdate({ _id: req.params.id }, {
-        User_Name,
-        Date,
-        sub_Title,
-        Intro,
-        blog_Images
-      });
-      if (!updatedBlogs) {
-        res.send('Unable to update Blogs');
-      }
-      res.send(updatedBlogs);
-    }
-  } catch {
+//   try {
+//     if (!(Date && User_Name && sub_Title && Intro && blog_Images)) {
+//       res.json({ message: "All fields are required", status: false });
+//     } else {
+//       const updatedBlogs = await blog.findByIdAndUpdate({ _id: req.params.id }, {
+//         User_Name,
+//         Date,
+//         sub_Title,
+//         Intro,
+//         blog_Images
+//       });
+//       if (!updatedBlogs) {
+//         res.send('Unable to update Blogs');
+//       }
+//       res.send(updatedBlogs);
+//     }
+//   } catch {
 
-  }
-}
+//   }
+// }
 
-//
+// //
 

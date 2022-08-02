@@ -26,6 +26,7 @@ router.get('/search-any-user-name', isAuthenticated, user.SearchUserName)
 router.get('/search-by-languages', isAuthenticated, user.SearchAnyLanguagsrName)
 router.delete('/removed/:user_Name', isAuthenticated, user.deleteUserName)
 router.delete('/removed-language/:language', isAuthenticated, user.deleteLanguages)
+router.get('/get-all', user.GetByFind)
 // router.get('/search-only-user-name',upload.single("myField"),isAuthenticated,user.SearchOnlyUserName)
 
 

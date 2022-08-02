@@ -7,6 +7,8 @@ balance: {type:Number,default:0},
 
 amount_Paid:{type:Number,default:0},
 
+amountValue:{type:Number,default:0},
+
 GST_applied:{type:Number,default:0},
 
 PaymentType:{type:String,default:"Added"},
@@ -18,4 +20,4 @@ PaymentStatus:{type:String,default:"Pending"}
 }, 
  { timestamps: true});
 
-module.exports = mongoose.model('wallet', walletSchema);
+module.exports = mongoose.model('Wallet', walletSchema)

@@ -5,7 +5,7 @@ const UserDetail = require('../models/userDetails')
 
 module.exports.postuserProfiles = async (req, res) => {
   let photo = req.body
-  photo['User_Images'] = [req.file.originalname]
+  photo['User_Images'] = req.file.originalname
   let { User_ID, User_Name, Experince, Skills, AboutMe, User_Images, Languages } = photo;
 
   try {
@@ -64,7 +64,7 @@ module.exports.ViewDataProfiles = async (req, res) => {
 module.exports.updateUserProfile = async (req, res) => {
   const id = req.params.id
   let photo = req.body
-  photo['User_Images'] = [req.file.originalname]
+  photo['User_Images'] = req.file.originalname
   const { User_ID, User_Name, Experince, Skills, AboutMe, User_Images, Languages } = req.body;
   console.log("req.user", req.user);
 
@@ -171,3 +171,24 @@ module.exports.deleteLanguages = async (req, res) => {
 };
 
 //
+
+
+module.exports.GetByFind = async (req, res) => {
+  try {
+    const getSupportDetails = await userDetails .find({});
+    if (!getSupportDetails) {
+      res.status(400).json({ message: "Enter the correct id", status: false });
+    } else {
+      res.status(200).json({
+        message: "User Details is Created successfully",
+        data: getSupportDetails,
+        status: true
+      });
+
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message, status: false });
+  }
+};
+
+
