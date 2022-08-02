@@ -14,7 +14,11 @@ app.use(express.json());
 const PORT = process.env.PORT || 5000
 const DB_URI = process.env.DB_URI
 
-
+app.get('/', (req, res) => {
+  res.status(200).json({
+    message: 'weelcome api'
+  })
+})
 
 app.use('/', require('./routes/router'));
 

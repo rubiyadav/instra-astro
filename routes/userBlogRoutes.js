@@ -21,9 +21,10 @@ var upload = multer({ storage: storage });
 
 router.post('/user-blog', isAuthenticated, upload.single("myField"), blog.postuserBlogs)
 // router.get('/get-blogs/:id', isAuthenticated, userblogs.ViewDataBlogs)
-router.patch('/edit-user-blog/:id', isAuthenticated, upload.single("myField"), blog.UpdateBlogs)
+// router.patch('/edit-user-blog/:id', isAuthenticated, upload.single("myField"), blog.UpdateBlogs)
 router.delete('/remove-blog/:id', isAuthenticated, blog.RemovedBlogs)
 router.get('/get-all', isAuthenticated, blog.GetByFind)
 
 
 module.exports = router;
+

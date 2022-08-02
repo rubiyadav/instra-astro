@@ -180,7 +180,7 @@ module.exports.GetByFind = async (req, res) => {
       res.status(400).json({ message: "Enter the correct id", status: false });
     } else {
       res.status(200).json({
-        message: "User Details is Created successfully",
+        message: " All User Details is Created successfully",
         data: getSupportDetails,
         status: true
       });
