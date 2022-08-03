@@ -6,22 +6,21 @@ const UserDetail = require('../models/userDetails')
 module.exports.postuserProfiles = async (req, res) => {
   let photo = req.body
   // photo['User_Images'] = req.file.originalname
-  let { User_ID, User_Name, Experince, Skills, AboutMe, Languages } = photo;
+  let { User_ID, User_Name, Experince, Skills, Languages } = photo;
   console.log(req.file)
   const path = req.file.destination + "/" + req.file.originalname
   if (!path) throw new Error('no  images file')
   console.log(path)
 
   try {
-    if (!(User_ID && User_Name && Experince && Skills && AboutMe && Languages)) {
+    if (!(User_ID && User_Name && Experince && Skills  && Languages)) {
       res.status(400).json({ message: "All fields are required", status: false });
     } else {
       const getResponce = await UserDetail.create({
         User_ID,
         User_Name,
         Experince,
-        Skills: 
-        AboutMe,
+        Skills,
         User_Images:path,
         Languages
       });
@@ -69,7 +68,7 @@ module.exports.updateUserProfile = async (req, res) => {
   const id = req.params.id
   let photo = req.body
   // photo['User_Images'] = req.file.originalname
-  const { User_ID, User_Name, Experince, Skills, AboutMe, Languages } = req.body;
+  const { User_ID, User_Name, Experince, Skills, Languages } = req.body;
   console.log("req.user", req.user);
   console.log(req.file)
   const path = req.file.destination + "/" + req.file.originalname
@@ -77,8 +76,8 @@ module.exports.updateUserProfile = async (req, res) => {
   console.log(path)
 
 
-  if (!(User_ID && User_Name && Experince && Skills && AboutMe && Languages)) res.status(400).json({ message: "Reuired fields" });
-  const UpdateUser = await UserDetail.findByIdAndUpdate(id, { User_ID, User_Name, Experince, Skills, AboutMe, Languages, User_Images: path,
+  if (!(User_ID && User_Name && Experince && Skills  && Languages)) res.status(400).json({ message: "Reuired fields" });
+  const UpdateUser = await UserDetail.findByIdAndUpdate(id, { User_ID, User_Name, Experince, Skills, Languages, User_Images: path,
 });
   if (!UpdateUser) res.status(400).json({ message: "Enter the correct Id", status: false });
   res.status(200).json({

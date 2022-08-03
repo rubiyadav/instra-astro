@@ -10,8 +10,6 @@ Experince: { type: String },
 
 Skills: { type: String },
 
-AboutMe: { type: String },
-
 User_Images: { type: String },
 
 Languages: { type: String },
