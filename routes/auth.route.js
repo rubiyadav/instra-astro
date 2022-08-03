@@ -12,3 +12,4 @@ router.get('/view-user-profiles', isAuthenticated, authController.GetUserProfile
 
 
 module.exports = router;
+

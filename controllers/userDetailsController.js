@@ -46,7 +46,7 @@ module.exports.postuserProfiles = async (req, res) => {
 
 module.exports.ViewDataProfiles = async (req, res) => {
   try {
-    const getDetails = await  UserDetail.findOne({ id: req.params.id });
+    const getDetails = await  UserDetail.findById({ _id: req.params.id });
     if (!getDetails) {
       res.status(400).json({ message: "Enter the correct id", status: false });
     } else {
@@ -69,7 +69,7 @@ module.exports.updateUserProfile = async (req, res) => {
   const id = req.params.id
   let photo = req.body
   // photo['User_Images'] = req.file.originalname
-  const { User_ID, User_Name, Experince, Skills, AboutMe, User_Images, Languages } = req.body;
+  const { User_ID, User_Name, Experince, Skills, AboutMe, Languages } = req.body;
   console.log("req.user", req.user);
   console.log(req.file)
   const path = req.file.destination + "/" + req.file.originalname
