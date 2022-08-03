@@ -1,14 +1,23 @@
-const blog = require('../models/blog')
+const blog = require('../models/blog');
+const { patch } = require('../routes/walletRoutes');
 
 //post for blog user
 
 module.exports.postuserBlogs = async (req, res) => {
+  console.log("enter")
   let photo = req.body
-  photo['blog_Images'] = [req.file.originalname]
-  let { Date, User_Name, sub_Title, Intro, blog_Images } = photo;
+  // photo['blog_Images'] = req.file.originalname
+  let { Date, User_Name, sub_Title, Intro } = photo;
+  console.log(req.file)
+  const path = req.file.destination + "/" + req.file.originalname
+  if(!path) throw new Error('no  images file')
+  console.log(path)
+
+  // return
+
 
   try {
-    if (!(Date && User_Name && sub_Title && Intro && blog_Images)) {
+    if (!(Date && User_Name && sub_Title && Intro)) {
       res.status(400).json({ message: "All fields are required", status: false });
     } else {
       const getResponce = await blog.create({
@@ -16,7 +25,7 @@ module.exports.postuserBlogs = async (req, res) => {
         Date,
         sub_Title,
         Intro,
-        blog_Images
+        blog_Images:path
       });
 
       if (!getResponce) {
@@ -67,7 +76,7 @@ module.exports.UpdateBlogs = async (req, res) => {
 //
 module.exports.GetByFind = async (req, res) => {
   try {
-    const getSupportDetails = await blog .find({});
+    const getSupportDetails = await blog.find({});
     if (!getSupportDetails) {
       res.status(400).json({ message: "Enter the correct id", status: false });
     } else {

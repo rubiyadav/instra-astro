@@ -12,14 +12,14 @@ var storage = multer.diskStorage({
 destination: function (req, file, cb) {
 cb(null, "public/images"); },
 filename: function (req, file, cb) {
-                  cb(null, Date.now + file.originalname);
+cb(null, Date.now ( ) + file.originalname);
                   },
 });
 
 var upload = multer({ storage: storage });
 
 
-router.post('/user-blog', isAuthenticated, upload.single("myField"), blog.postuserBlogs)
+router.post('/user-blog', upload.single("myField"), isAuthenticated, blog.postuserBlogs)
 // router.get('/get-blogs/:id', isAuthenticated, userblogs.ViewDataBlogs)
 // router.patch('/edit-user-blog/:id', isAuthenticated, upload.single("myField"), blog.UpdateBlogs)
 router.delete('/remove-blog/:id', isAuthenticated, blog.RemovedBlogs)

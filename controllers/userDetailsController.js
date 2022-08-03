@@ -5,21 +5,25 @@ const UserDetail = require('../models/userDetails')
 
 module.exports.postuserProfiles = async (req, res) => {
   let photo = req.body
-  photo['User_Images'] = req.file.originalname
-  let { User_ID, User_Name, Experince, Skills, AboutMe, User_Images, Languages } = photo;
+  // photo['User_Images'] = req.file.originalname
+  let { User_ID, User_Name, Experince, Skills, AboutMe, Languages } = photo;
+  console.log(req.file)
+  const path = req.file.destination + "/" + req.file.originalname
+  if (!path) throw new Error('no  images file')
+  console.log(path)
 
   try {
-    if (!(User_ID && User_Name && Experince && Skills && AboutMe && User_Images && Languages)) {
+    if (!(User_ID && User_Name && Experince && Skills && AboutMe && Languages)) {
       res.status(400).json({ message: "All fields are required", status: false });
     } else {
       const getResponce = await UserDetail.create({
         User_ID,
         User_Name,
         Experince,
-        Skills: JSON.parse(Skills),
+        Skills: 
         AboutMe,
-        User_Images,
-        Languages: JSON.parse(Languages),
+        User_Images:path,
+        Languages
       });
 
       if (!getResponce) {
@@ -64,12 +68,18 @@ module.exports.ViewDataProfiles = async (req, res) => {
 module.exports.updateUserProfile = async (req, res) => {
   const id = req.params.id
   let photo = req.body
-  photo['User_Images'] = req.file.originalname
+  // photo['User_Images'] = req.file.originalname
   const { User_ID, User_Name, Experince, Skills, AboutMe, User_Images, Languages } = req.body;
   console.log("req.user", req.user);
+  console.log(req.file)
+  const path = req.file.destination + "/" + req.file.originalname
+  if (!path) throw new Error('no  images file')
+  console.log(path)
 
-  if (!(User_ID && User_Name && Experince && Skills && AboutMe && User_Images && Languages)) res.status(400).json({ message: "Reuired fields" });
-  const UpdateUser = await UserDetail.findByIdAndUpdate(id, { User_ID, User_Name, Experince, Skills: JSON.parse(Skills), AboutMe, User_Images, Languages: JSON.parse(Languages) });
+
+  if (!(User_ID && User_Name && Experince && Skills && AboutMe && Languages)) res.status(400).json({ message: "Reuired fields" });
+  const UpdateUser = await UserDetail.findByIdAndUpdate(id, { User_ID, User_Name, Experince, Skills, AboutMe, Languages, User_Images: path,
+});
   if (!UpdateUser) res.status(400).json({ message: "Enter the correct Id", status: false });
   res.status(200).json({
     message: 'Udpate is successfully', status: true, UpdateUser

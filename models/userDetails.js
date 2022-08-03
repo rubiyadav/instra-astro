@@ -8,13 +8,13 @@ User_Name: { type: String },
 
 Experince: { type: String },
 
-Skills: [{ type: String }],
+Skills: { type: String },
 
 AboutMe: { type: String },
 
-User_Images: [{ type: String }],
+User_Images: { type: String },
 
-Languages: [{ type: String }],
+Languages: { type: String },
 
 
 }, 

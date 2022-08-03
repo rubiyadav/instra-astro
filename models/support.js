@@ -17,7 +17,8 @@ const SupportSchema = new Schema(
       zipcode: {
        type: Number,
        required:true
-   }
+    },
+    UserId: { type: String },
   },
   { timestamps: true }
   

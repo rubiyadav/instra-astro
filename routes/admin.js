@@ -5,19 +5,19 @@ const admin = require("../controllers/admin");
 
 const { isAuthenticated } = require('../controllers/auth.controller')
 
-const app = require("express");
-const path = require("path");
-var multer = require("multer");
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/images");
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
-});
+// const app = require("express");
+// const path = require("path");
+// var multer = require("multer");
+// var storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "public/images");
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, file.originalname);
+//   },
+// });
 
-var upload = multer({ storage: storage });
+// var upload = multer({ storage: storage });
 
 
 router.post('/login-admin', admin.login);

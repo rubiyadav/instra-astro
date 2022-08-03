@@ -5,7 +5,7 @@ const ourBlogSchema = new mongoose.Schema({
     
     sub_Title:{type:String},
     
-    blog_Images:[{ type: String }],
+    blog_Images:{ type: String },
     
     User_Name: { type: String },
     
