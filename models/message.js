@@ -10,6 +10,6 @@ const MessageSchema = new mongoose.Schema({
   to:{type:String,default:""}
 },{ timestamps: true})
 
-const Message = mongoose.model('Message', MessageSchema);
+const Message = mongoose.model('message', MessageSchema);
 
 module.exports = Message
