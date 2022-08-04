@@ -36,13 +36,13 @@ module.exports.LiveSessionActive = async (req, res) => {
   }
 }
 
-//get api
+//LiveSessionUpdate
 module.exports.LiveSessionUpdate = async (req, res) => {
   try {
     const {SessionStatus} = req.body;
 const id = req.params.id
     if (!(SessionStatus)) res.status(400).json({ message: "No One Is Active" })
-    const Updatelivesession = await  LiveSession .FindOneAndUpdate({_id:id},{SessionStatus});
+    const Updatelivesession = await  LiveSession .findOneAndUpdate({_id:id},{SessionStatus});
     if (!Updatelivesession) res.status(400).json({ message: "Unable to Update Session", status: false });
     res.status(200).json({
       message: "Updated Session",
@@ -54,10 +54,10 @@ const id = req.params.id
   }
 }
 
-//---
+//---UpcommingLiveSession 
 module.exports.UpcommingLiveSession = async (req, res) => {
   try {
-    const Upcomminglivesession = await  LiveSession .Find({SessionStatus:"Upcomming"});
+    const Upcomminglivesession = await  LiveSession .find({SessionStatus:"Upcomming"});
     if (!Upcomminglivesession) res.status(400).json({ message: "No Session", status: false });
     res.status(200).json({
       message: "Upcomming Session",
@@ -69,10 +69,10 @@ module.exports.UpcommingLiveSession = async (req, res) => {
   }
 }
 
-//---
+//---ActiveLiveSession
 module.exports.ActiveLiveSession = async (req, res) => {
   try {
-    const ActiveLiveSession = await  LiveSession .Find({SessionStatus:"Active"});
+    const ActiveLiveSession = await  LiveSession .find({SessionStatus:"Active"});
     if (!ActiveLiveSession) res.status(400).json({ message: "No Session", status: false });
     res.status(200).json({
       message: "Active Session",
@@ -83,10 +83,6 @@ module.exports.ActiveLiveSession = async (req, res) => {
     res.status(400).json({ message: error.message, status: false });
   }
 }
-
-
-
-
 
 
 
