@@ -25,7 +25,7 @@ router.use('/Support', require('./supportRoutes'))
 
 router.use('/blog', require('./userBlogRoutes'))
 
-router.use('/Message',require('./messageRoutes'))
+router.use('/message',require('./messageRoutes'))
 
 module.exports = router;
 

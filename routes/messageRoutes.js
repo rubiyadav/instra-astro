@@ -2,10 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 
-const Message = require('../controllers/messageController') 
+const messageController = require('../controllers/messageController') 
 
-router.post('/user-message', Message.SaveMessageByUsers)
+router.post('/user-message', messageController.SaveMessageByUsers)
 
-router.get('/view-messgaes', Message.getMessageByUsers)
+router.get('/view-messgaes', messageController.getMessageByUsers)
 
 module.exports = router;
