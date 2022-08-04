@@ -30,7 +30,7 @@ module.exports.UserSettings = async (req, res) => {
 
 module.exports.ViewDataNotification = async (req, res) => {
   try {
-      const getDetails = await UserSetting .findOne({ id: req.params.id });
+      const getDetails = await UserSetting .findOne({_id: req.params.id });
     if (!getDetails) {
       res.status(400).json({ message: "Enter the correct id", status: false });
     } else {
