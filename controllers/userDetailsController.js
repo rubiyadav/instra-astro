@@ -112,7 +112,7 @@ module.exports.SearchUserNameLangSkills = async (req, res) => {
 module.exports.SearchUserName = async (req, res) => {
   const search = req.query.search
   try {
-    const student = await userDetails.find({ $or: [{ User_Name: { "$regex": search, "$options": "i" } },] });
+    const student = await UserDetail.find({ $or: [{ User_Name: { "$regex": search, "$options": "i" } },] });
     if (student.length == 0) {
       res.json({ message: "This User Is not Found", status: false });
     } else {
@@ -151,7 +151,7 @@ module.exports.SearchAnyLanguagsrName = async (req, res) => {
 //Delete User--
 module.exports.deleteUserName = async (req, res) => {
   try {
-    const DeleteUser = await userDetails.findOneAndDelete({ User_Name: req.params.user_Name });
+    const DeleteUser = await UserDetail.findOneAndDelete({ User_Name: req.params.user_Name });
     if (!DeleteUser) {
       res.json({ message: "Enter the corret User  Name", status: false });
     } else {
@@ -166,7 +166,7 @@ module.exports.deleteUserName = async (req, res) => {
 //delete Languages
 module.exports.deleteLanguages = async (req, res) => {
   try {
-    const DeleteUser = await userDetails.findOneAndDelete({Languages: req.params.language});
+    const DeleteUser = await UserDetail.findOneAndDelete({Languages: req.params.language});
     if (!DeleteUser) {
       res.json({ message: "Enter the corret User Languages", status: false });
     } else {
@@ -181,7 +181,7 @@ module.exports.deleteLanguages = async (req, res) => {
 
 module.exports.GetByFind = async (req, res) => {
   try {
-    const getSupportDetails = await userDetails .find({});
+    const getSupportDetails = await UserDetail .find({});
     if (!getSupportDetails) {
       res.status(400).json({ message: "Enter the correct id", status: false });
     } else {
