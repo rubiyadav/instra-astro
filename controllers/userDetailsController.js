@@ -1,4 +1,4 @@
-const userDetails = require('../models/userDetails');
+// const userDetails = require('../models/userDetails');
 const UserDetail = require('../models/userDetails')
 // onst UserDetail = require('../models/userDetails')
 //post api--
@@ -40,7 +40,6 @@ module.exports.postuserProfiles = async (req, res) => {
   }
 };
 
-
 //get api
 
 module.exports.ViewDataProfiles = async (req, res) => {
@@ -60,7 +59,6 @@ module.exports.ViewDataProfiles = async (req, res) => {
     res.status(400).json({ message: error.message, status: false });
   }
 };
-
 
 //patch api
 
@@ -180,7 +178,6 @@ module.exports.deleteLanguages = async (req, res) => {
 };
 
 //
-
 
 module.exports.GetByFind = async (req, res) => {
   try {
