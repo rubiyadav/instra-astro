@@ -78,7 +78,7 @@ module.exports.GetByFind = async (req, res) => {
 
 module.exports.ViewWalletGetByID = async (req, res) => {
   try {
-    const getwalletDetails = await Wallet.findOne({ id: req.params.id });
+    const getwalletDetails = await Wallet.findOne({_id: req.params.id });
     if (!getwalletDetails) {
       res.status(400).json({ message: "Enter the correct id", status: false });
     } else {
