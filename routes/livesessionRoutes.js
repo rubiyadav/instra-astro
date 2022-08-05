@@ -6,7 +6,7 @@ const livesession = require('../controllers/liveSessionController')
 router.post('/live-session', livesession.LiveSession)
 router.patch('/update-live-session/:id', livesession.LiveSessionUpdate)
 router.get('/upcoming-live-session', livesession.UpcommingLiveSession)
-router.get('/active-live-session/:id', livesession.ActiveLiveSession)
+router.get('/active-live-session', livesession.ActiveLiveSession)
 
 
 module.exports = router;
