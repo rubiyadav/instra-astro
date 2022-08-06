@@ -1,7 +1,7 @@
 
 const User = require("../models/User")
 const Wallet = require("../models/wallet")
-const ReferCode = require("../models/Refercode")
+const ReferCode = require("../models/refercode")
 
 
 //post api for refer code--
