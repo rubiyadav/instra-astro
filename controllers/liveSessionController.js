@@ -122,5 +122,3 @@ module.exports.ActiveLiveSession = async (req, res) => {
   }
 }
 
-
-

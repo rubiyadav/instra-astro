@@ -27,7 +27,9 @@ router.use('/blog', require('./userBlogRoutes'))
 
 router.use('/Message', require('./messageRoutes'))
 
-router.use('/livesession',require('./livesessionRoutes'))
+router.use('/livesession', require('./livesessionRoutes'))
+
+router.use('/ReferCode',require('./refercodeRoutes'))
 
 module.exports = router;
 
