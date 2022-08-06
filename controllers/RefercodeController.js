@@ -101,4 +101,23 @@ module.exports.ReferCodeView = async (req, res) => {
 
 
 
-//
+//Get By Id
+
+
+module.exports.ViewRefertGetByID = async (req, res) => {
+  try {
+    const getReferCode = await ReferCode.findById({_id: req.params.id });
+    if (!getReferCode) {
+      res.status(400).json({ message: "Enter the correct id", status: false });
+    } else {
+      res.status(200).json({
+        message: "getReferCode Details Created successfully",
+        data: getReferCode,
+        status: true
+      });
+
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message, status: false });
+  }
+};

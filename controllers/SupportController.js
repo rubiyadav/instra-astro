@@ -53,7 +53,7 @@ module.exports.GetByFind = async (req, res) => {
 
 module.exports.ViewCustomerDSupportGetByID = async (req, res) => {
   try {
-    const getwalletDetails = await Support.findOne({ id: req.params.id });
+    const getwalletDetails= await Support.findOne({_id: req.params.id });
     if (!getwalletDetails) {
       res.status(400).json({ message: "Enter the correct id", status: false });
     } else {
