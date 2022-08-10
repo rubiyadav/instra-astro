@@ -8,15 +8,15 @@ const moment = require("moment");
 
 module.exports.LiveSession = async (req, res) => {
   try {
-    const {UserId,SessionLink} = req.body;
-    if (!(UserId && SessionLink )) res.status(400).json({ message: "No One Is Active" })
-    const newlivesession = await  LiveSession .create({ UserId,SessionLink,SessionTime: moment().format("lll"),});
+    const { UserId, SessionLink } = req.body;
+    if (!(UserId && SessionLink)) res.status(400).json({ message: "No One Is Active" })
+    const newlivesession = await LiveSession.create({ UserId, SessionLink, SessionTime: moment().format("lll"), });
     if (!newlivesession) res.status(400).json({ message: "no message", status: false });
     res.status(200).json({
       message: "LiveSession is created successfully",
       data: newlivesession,
       status: true,
-   
+
     });
   } catch (error) {
     res.status(400).json({ message: error.message, status: false });
@@ -28,16 +28,16 @@ module.exports.LiveSession = async (req, res) => {
 module.exports.LiveSessionActive = async (req, res) => {
   try {
     const id = req.params.id
-    let Updatelivesession = await  LiveSession .findOneAndUpdate({_id:id},{ SessionStatus:"Active" });
+    let Updatelivesession = await LiveSession.findOneAndUpdate({ _id: id }, { SessionStatus: "Active" });
 
     if (!Updatelivesession) res.status(400).json({ message: "Session Not Active", status: false });
     res.status(200).json({
       message: "Session is Active",
       data: Updatelivesession,
-          SessionTime: moment().format("lll"),
+      SessionTime: moment().format("lll"),
       status: true,
-    
-      
+
+
     });
   } catch (error) {
     res.status(400).json({ message: error.message, status: false });
@@ -48,14 +48,14 @@ module.exports.LiveSessionActive = async (req, res) => {
 //LiveSessionUpdate
 module.exports.LiveSessionUpdate = async (req, res) => {
   try {
-    const {SessionStatus} = req.body;
-const id = req.params.id
+    const { SessionStatus } = req.body;
+    const id = req.params.id
     if (!(SessionStatus)) res.status(400).json({ message: "No One Is Active" })
-    const Updatelivesession = await  LiveSession .findOneAndUpdate({_id:id},{SessionStatus});
+    const Updatelivesession = await LiveSession.findOneAndUpdate({ _id: id }, { SessionStatus });
     if (!Updatelivesession) res.status(400).json({ message: "Unable to Update Session", status: false });
     res.status(200).json({
       message: "Active",
-        SessionTime: moment().format("lll"),
+      SessionTime: moment().format("lll"),
       data: Updatelivesession,
       status: true,
 
@@ -65,25 +65,69 @@ const id = req.params.id
   }
 }
 
-//---UpcommingLiveSession 
+//---UpcommingLiveSession
 module.exports.UpcommingLiveSession = async (req, res) => {
   try {
-    let Upcomminglivesession = await  LiveSession.find({ SessionStatus:"Upcomming" });
-    let senddata=[]
+    let Upcomminglivesession = await LiveSession.find({ SessionStatus: "Upcomming" });
+    let senddata = []
     for (let i = 0; i < Upcomminglivesession.length; i++) {
-      
-      let datas= await  UserDetail.findOne({ User_ID: Upcomminglivesession[i].UserId });
-      var maindata= { "Upcoming": Upcomminglivesession[i],Userdata:datas }
-      
+
+      const datas = await UserDetail.findOne({ User_ID: Upcomminglivesession[i].UserId });
+      // var maindata = { "Upcoming": Upcomminglivesession[i], Userdata: datas }
+      // senddata.push(maindata)
+      console.log(datas, "datas");
+    // console.log(datas)
+
+    res.status(200).json({
+      message: "Upcomming Session",
+      data: Upcomminglivesession,
+      Userdata: datas,
+      status: true,
+    });
+    }
+
+    if (!senddata) res.status(400).json({ message: "No Session", status: false });
+
+  } catch (error) {
+    res.status(400).json({ message: error.message, status: false });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+//---UpcommingLiveSession
+module.exports.UpcommingLiveSession = async (req, res) => {
+  try {
+    let ActiveLiveSession = await LiveSession.find({ SessionStatus: "Upcomming" });
+    let senddata = []
+    for (let i = 0; i < ActiveLiveSession.length; i++) {
+      let maind = ActiveLiveSession[i]
+      let datas = await UserDetail.findOne({ User_ID:  ActiveLiveSession[i].UserId });
+
+      var maindata = {
+        ...maind.toObject(),
+        User_Name: datas !== null ? datas.User_Name : "",
+        Experince: datas !== null ? datas.Experince : "",
+        Skills: datas !== null ? datas.Skills : "",
+        User_Images: datas !== null ? datas.User_Images : "",
+        Languages: datas !== null ? datas.Languages : ""
+      }
       senddata.push(maindata)
-      console.log(maindata,"datas");
 
 
-      
+
     }
     if (!senddata) res.status(400).json({ message: "No Session", status: false });
     res.status(200).json({
-      message: "Upcomming Session",
+      message: "ActiveLiveSession",
       data: senddata,
       status: true,
     });
@@ -95,28 +139,29 @@ module.exports.UpcommingLiveSession = async (req, res) => {
 //---ActiveLiveSession
 module.exports.ActiveLiveSession = async (req, res) => {
   try {
-    let ActiveLiveSession = await  LiveSession .find({SessionStatus:"Active"});
-    let senddata=[]
+    let ActiveLiveSession = await LiveSession.find({ SessionStatus: "Active" });
+    let senddata = []
     for (let i = 0; i < ActiveLiveSession.length; i++) {
-      
-      let datas= await  UserDetail.findOne({ User_ID: ActiveLiveSession[i].UserId });
-      var maindata= { "Upcoming": ActiveLiveSession[i],Userdata:datas }
-      
+      let maind = ActiveLiveSession[i]
+      let datas = await UserDetail.findOne({ User_ID: ActiveLiveSession[i].UserId });
+      var maindata = {
+        ...maind.toObject(),
+        User_Name: datas !== null ? datas.User_Name : "",
+        Experince: datas !== null ? datas.Experince : "",
+        Skills: datas !== null ? datas.Skills : "",
+        User_Images: datas !== null ? datas.User_Images : "",
+        Languages: datas !== null ? datas.Languages : ""
+      }
       senddata.push(maindata)
-      console.log(maindata,"datas");
-  
     }
     if (!senddata) res.status(400).json({ message: "No Session", status: false });
     res.status(200).json({
       message: "ActiveLive Session",
       data: senddata,
       status: true,
-    
     });
 
   } catch (error) {
     res.status(400).json({ message: error.message, status: false });
   }
 }
-
-

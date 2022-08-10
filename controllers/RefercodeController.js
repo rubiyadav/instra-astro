@@ -4,20 +4,30 @@ const Wallet = require("../models/wallet")
 const ReferCode = require("../models/refercode")
 
 
+
 //post api for refer code--
+
 module.exports.AddReferCode = async (req, res) => {
   try {
-    const { UserId, PersonReferCode } = req.body;
+    const { PersonReferCode } = req.body;
+    let UserId = req.user
     if (!(UserId && PersonReferCode)) return res.status(400).json({ message: "Please fill required data" })
 
+    // if already exist or not
+
     const Existing = await ReferCode.findOne({ UserId: UserId });
-      if (Existing) return res.status(400).json({ message: "Already exist" })
+    //   if (Existing) return res.status(400).json({ message: "Already exist" })
+
+    // Find if the refer code is correct or not and the refer code is not it's own
 
     const ParentUser = await User.findOne({ ReferCode: PersonReferCode });
     if (!ParentUser) return res.status(400).json({ message: "Invalid Refer Code" })
+
+
     // and the refer code is not it's own
     const Userdata = await User.findOne({ _id: UserId });
-    if (Userdata.ReferCode == PersonReferCode) return res.status(400).json({ message: "Invalid Refer Code sssssss" })
+    if (Userdata.ReferCode == PersonReferCode) return res.status(400).json({ message: "Invalid Refer Code" })
+
 
     // New Refer Created
     const NewRefer = await ReferCode.create({
@@ -27,13 +37,16 @@ module.exports.AddReferCode = async (req, res) => {
       UserBonus: 30,
     });
     if (!NewRefer) return res.status(400).json({ message: "New Refer Not created" })
-    // console.log(NewRefer)
+
     // Add data in Parent wallet
     const last_payment = await Wallet.findOne({ UserId: ParentUser._id })
+
+
     //   res.status(200).json(last_payment)
     let balanceamount = last_payment.balance
     let bonusamount = NewRefer.ParentBonus
-    // console.log(last_payment, ParentUser._id);
+    console.log(last_payment, ParentUser._id);
+
 
     let balance = balanceamount + bonusamount
     let GST_applied = Math.round((18 * bonusamount) / 100)
@@ -48,6 +61,7 @@ module.exports.AddReferCode = async (req, res) => {
       GST_applied,
       PaymentMode: "ReferCode"
     });
+
 
     // Add data in User wallet
     const newlast_payment = await Wallet.findOne({ UserId })
@@ -68,8 +82,9 @@ module.exports.AddReferCode = async (req, res) => {
       PaymentMode: "ReferCode"
     });
 
+
     return res.status(200).json({
-      message: "New Refer code",
+      message: "New refer code",
       ParentWallet,
       userWallet,
       NewRefer,
