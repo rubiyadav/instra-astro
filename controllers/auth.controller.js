@@ -6,6 +6,7 @@ const client = require('twilio')(accountSid, authToken);
 const jwt = require("jsonwebtoken");
 const JWTkey = 'rubi'
 const otp = require('../services/OTP');
+const Wallet = require('../models/wallet')
 
 // const Wallet = require('../models/wallet')
 const Notifications = require('../models/userSetting');
@@ -133,69 +134,45 @@ module.exports.GetUserProfiles = async (req, res, next) => {
 }
 
 
-//post for blog user
+//get api
+module.exports.getuserwallet = async (req, res) => {
+  try {
+    const getUserWallet = await Wallet.find({ UserId: req.params.id })
+    
+    if (!getUserWallet) {
+      res.status(400).json({ message: "something went Wrong ", status: false });
+    } else {
+      res.status(200).json({
+        message: "User Wallet Details  is Created successfully",
+        data: getUserWallet,
+        status: true
+      });
 
-// module.exports.postuserBlogs = async (req, res) => {
-//   let photo = req.body
-//   photo['blog_Images'] = [req.file.originalname]
-//   let { Date, User_Name, sub_Title, Intro, blog_Images } = photo;
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message, status: false });
+  }
+};
 
-//   try {
-//     if (!(Date && User_Name && sub_Title && Intro && blog_Images)) {
-//       res.status(400).json({ message: "All fields are required", status: false });
-//     } else {
-//       const getResponce = await blog.create({
-//         User_Name,
-//         Date,
-//         sub_Title,
-//         Intro,
-//         blog_Images
-//       });
+//find one]
+module.exports.getuserWalletFindOne= async (req, res) => {
+  try {
+    const getUserWallet = await Wallet.findOne({ UserId: req.params.id }).sort({ '_id': -1 })
 
-//       if (!getResponce) {
-//         res.status(400).json({ message: "User Blogs  is not created", status: false });
-//       } else {
-//         res.status(200).json({
-//           message: "User Bloges is created successfully",
-//           data: getResponce,
-//           status: true,
-//         });
-//       }
-//     }
-//   } catch (error) {
-//     res.status(400).json({ message: error.message, status: false });
-//   }
-// };
+    if (!getUserWallet) {
+      res.status(400).json({ message: "something went Wrong ", status: false });
+    } else {
+      res.status(200).json({
+        message: "User New  Wallet is Created successfully",
+        data: getUserWallet,
+        status: true
+      });
+
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message, status: false });
+  }
+};
 
 
-// //update blog for user
-
-// module.exports.UpdateBlogs = async (req, res) => {
-//   let photo = req.body
-//   photo['blog_Images'] = [req.file.originalname]
-//   let { Date, User_Name, sub_Title, Intro, blog_Images
-//   } = req.body;
-
-//   try {
-//     if (!(Date && User_Name && sub_Title && Intro && blog_Images)) {
-//       res.json({ message: "All fields are required", status: false });
-//     } else {
-//       const updatedBlogs = await blog.findByIdAndUpdate({ _id: req.params.id }, {
-//         User_Name,
-//         Date,
-//         sub_Title,
-//         Intro,
-//         blog_Images
-//       });
-//       if (!updatedBlogs) {
-//         res.send('Unable to update Blogs');
-//       }
-//       res.send(updatedBlogs);
-//     }
-//   } catch {
-
-//   }
-// }
-
-// //
 

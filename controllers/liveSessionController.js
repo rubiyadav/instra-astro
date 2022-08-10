@@ -104,21 +104,19 @@ module.exports.ActiveLiveSession = async (req, res) => {
       
       senddata.push(maindata)
       console.log(maindata,"datas");
-
-
-      
+  
     }
     if (!senddata) res.status(400).json({ message: "No Session", status: false });
     res.status(200).json({
       message: "ActiveLive Session",
       data: senddata,
       status: true,
-     
-      
+    
     });
 
   } catch (error) {
     res.status(400).json({ message: error.message, status: false });
   }
 }
+
 

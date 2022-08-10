@@ -79,11 +79,11 @@ module.exports.AddReferCode = async (req, res) => {
     res.status(400).json({ message: error.message, status: false });
   }
 }
-
 //--get api for refer code
 module.exports.ReferCodeView = async (req, res) => {
   try {
-    const getReferCode = await ReferCode.find({});
+    // const getReferCode = await ReferCode.find({});
+    const getReferCode = await ReferCode.find({ }).sort({ '_id': -1 })
     if (!getReferCode) {
       res.status(400).json({ message: "something went Wrong ", status: false });
     } else {
@@ -99,14 +99,10 @@ module.exports.ReferCodeView = async (req, res) => {
   }
 };
 
-
-
 //Get By Id
-
-
 module.exports.ViewRefertGetByID = async (req, res) => {
   try {
-    const getReferCode = await ReferCode.findById({_id: req.params.id });
+    const getReferCode = await ReferCode.findOne({ _id: req.params.id }).sort({ '_id': -1 })
     if (!getReferCode) {
       res.status(400).json({ message: "Enter the correct id", status: false });
     } else {
@@ -121,3 +117,4 @@ module.exports.ViewRefertGetByID = async (req, res) => {
     res.status(400).json({ message: error.message, status: false });
   }
 };
+
